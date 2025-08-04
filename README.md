@@ -47,3 +47,33 @@ public class TestButton : ButtonOption
         player?.Heal(player.MaxHealth - player.Health);
     }
 }
+```
+##  📂 Creating and Registering a Node
+
+All options must be placed inside a SettingNode, which defines a section in the in-game menu.
+```csharp
+using Exiled.API.Features;
+using Eyassa.Interfaces;
+using Eyassa.Models;
+
+namespace Eyassa.Test.Options;
+
+public class TestNode : SettingNode
+{
+    public override string GetHeaderName(Player player) => "Test node";
+    public override string GetHeaderHintDescription(Player player) => "Is test";
+
+    public override IOption[] Options { get; } =
+    [
+        new TestButton(),
+        new TestSlider(),
+        new TestDropdown(),
+        new TestInputText(),
+        new TestTextArea(),
+        new TestTwoButton()
+    ];
+}
+```
+
+Nodes need to be registered using `SettingsNode::Register();` 
+Example: `new TestNode().Register();`
