@@ -7,10 +7,11 @@ namespace Eyassa.Models.Options;
 
 public abstract class ButtonOption : OptionBase<ButtonSetting>
 {
-    public abstract string GetButtonText(Player player);
+    protected abstract string GetButtonText(Player player);
 
-    public abstract float GetHoldTime(Player player);
-    public override void UpdateOption(Player? player, bool overrideValue = true)
+    protected abstract float GetHoldTime(Player player);
+
+    protected override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

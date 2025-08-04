@@ -6,10 +6,10 @@ namespace Eyassa.Interfaces;
 public interface IOption
 {
     internal int Id { get; }
-    bool IsVisibleToPlayer(Player? player);
+    public bool IsVisibleToPlayer(Player? player);
 
     internal SettingBase BuildBase(Player? player);
 
-    void OnFirstUpdate(Player? player);
-    void Init();
+    internal void OnFirstUpdate(Player? player);
+    internal void Init();
 }

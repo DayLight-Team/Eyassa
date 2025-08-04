@@ -6,15 +6,14 @@ namespace Eyassa.Models.Options;
 
 public abstract class SliderOption : OptionBase<SliderSetting>
 {
-    
-    public abstract float GetMin(Player player);
-    public abstract float GetMax(Player player);
-    public abstract float GetDefaultValue(Player player);
-    public virtual bool GetIsInteger(Player player) => false;
-    public virtual string GetStringFormat(Player player) => "0.##";
-    public virtual string GetDisplayFormat(Player player) => "{0}";
+    protected abstract float GetMin(Player player);
+    protected abstract float GetMax(Player player);
+    protected abstract float GetDefaultValue(Player player);
+    protected virtual bool GetIsInteger(Player player) => false;
+    protected virtual string GetStringFormat(Player player) => "0.##";
+    protected virtual string GetDisplayFormat(Player player) => "{0}";
 
-    public override void UpdateOption(Player? player, bool overrideValue = true)
+    protected override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

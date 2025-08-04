@@ -9,10 +9,10 @@ namespace Eyassa.Models.Options;
 
 public abstract class TextAreaOption : OptionBase<TextInputSetting>
 {
-    public virtual SSTextArea.FoldoutMode GetFoldoutMode(Player player) => SSTextArea.FoldoutMode.NotCollapsable;
-    public virtual TextAlignmentOptions GetAlignment(Player player) => TextAlignmentOptions.TopLeft;
+    protected virtual SSTextArea.FoldoutMode GetFoldoutMode(Player player) => SSTextArea.FoldoutMode.NotCollapsable;
+    protected virtual TextAlignmentOptions GetAlignment(Player player) => TextAlignmentOptions.TopLeft;
 
-    public override void UpdateOption(Player? player, bool overrideValue = true)
+    protected override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

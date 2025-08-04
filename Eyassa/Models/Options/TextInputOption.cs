@@ -10,10 +10,11 @@ namespace Eyassa.Models.Options;
 public abstract class TextInputOption : OptionBase<UserTextInputSetting>
 {
 
-    public abstract string GetPlaceholder(Player player);
-    public abstract int GetMaxLength(Player player);
-    public abstract TMP_InputField.ContentType GetContentType(Player player);
-    public override void UpdateOption(Player? player, bool overrideValue = true)
+    protected abstract string GetPlaceholder(Player player);
+    protected abstract int GetMaxLength(Player player);
+    protected abstract TMP_InputField.ContentType GetContentType(Player player);
+
+    protected override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

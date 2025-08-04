@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Random = UnityEngine.Random;
+﻿using Random = UnityEngine.Random;
 
-namespace Eyassa;
+namespace Eyassa.Managers;
 
 internal class IdManager
 {

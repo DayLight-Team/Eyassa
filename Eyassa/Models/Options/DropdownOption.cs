@@ -7,10 +7,11 @@ namespace Eyassa.Models.Options;
 
 public abstract class DropdownOption : OptionBase<DropdownSetting>
 {
-    public abstract List<string> GetOptions(Player player);
-    public virtual int GetDefaultOptionIndex(Player player) => 0;
-    public virtual SSDropdownSetting.DropdownEntryType GetEntryType(Player player) => SSDropdownSetting.DropdownEntryType.Regular;
-    public override void UpdateOption(Player? player, bool overrideValue = true)
+    protected abstract List<string> GetOptions(Player player);
+    protected virtual int GetDefaultOptionIndex(Player player) => 0;
+    protected virtual SSDropdownSetting.DropdownEntryType GetEntryType(Player player) => SSDropdownSetting.DropdownEntryType.Regular;
+
+    protected override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
@@ -32,8 +33,9 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
 
     }
 
-    public Dictionary<Player, List<string>> LastSentOptions { get; } = new();
-    public List<string> GetLastSentOptions(Player? player)
+    private Dictionary<Player, List<string>> LastSentOptions { get; } = new();
+
+    protected List<string> GetLastSentOptions(Player? player)
     {
         if(player == null)
             return new List<string>();

@@ -4,6 +4,7 @@ using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Loader;
 using Eyassa.Interfaces;
+using Eyassa.Managers;
 using Eyassa.Models;
 using MEC;
 using Player = Exiled.Events.Handlers.Player;
@@ -12,7 +13,7 @@ namespace Eyassa;
 
 public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 {
-    public override string Name { get; } = "Even Yet another server-specific settings API wrapper for EXILED";
+        public override string Name { get; } = "Even Yet another server-specific settings API wrapper for EXILED";
 
     public override string Author { get; } = "Tili :3";
 

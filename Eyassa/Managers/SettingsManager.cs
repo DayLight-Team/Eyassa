@@ -1,20 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Exiled.API.Features;
+﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
-using Eyassa.Interfaces;
 using Eyassa.Models;
 
-namespace Eyassa;
+namespace Eyassa.Managers;
 
-public class SettingsManager
+internal class SettingsManager
 {
-    public static List<SettingNode> Nodes { get; } = new();
+    internal static List<SettingNode> Nodes { get; } = new();
     
     
-    public static Dictionary<Player, List<int>> SentIds { get; } = new();
-    public static Dictionary<Player, List<int>> SentNodes { get; } = new();
-    public static void SendToPlayer(Player? player)
+    internal static Dictionary<Player, List<int>> SentIds { get; } = new();
+    internal static Dictionary<Player, List<int>> SentNodes { get; } = new();
+    internal static void SendToPlayer(Player? player)
     {
         
         if(player == null)

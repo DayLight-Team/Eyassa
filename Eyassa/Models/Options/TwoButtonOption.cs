@@ -7,10 +7,11 @@ namespace Eyassa.Models.Options;
 
 public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
 {
-    public abstract string GetFirstButtonText(Player player);
-    public abstract string GetSecondButtonText(Player player);
-    public abstract bool GetIsSecondsButtonDefault(Player player);
-    public override void UpdateOption(Player? player, bool overrideValue = true)
+    protected abstract string GetFirstButtonText(Player player);
+    protected abstract string GetSecondButtonText(Player player);
+    protected abstract bool GetIsSecondsButtonDefault(Player player);
+
+    protected override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

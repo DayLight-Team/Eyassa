@@ -3,6 +3,7 @@ using System.Reflection;
 using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
 using Eyassa.Interfaces;
+using Eyassa.Managers;
 using MEC;
 using UserSettings.ServerSpecific;
 
@@ -11,13 +12,13 @@ namespace Eyassa.Models;
 public abstract class OptionBase<T> : IOption where T : SettingBase
 {
     public virtual int Id { get; } = IdManager.GetNextId();
-    public abstract string GetLabel(Player player);
-    public abstract string GetHint(Player player);
-    public abstract void OnValueChanged(Player? player);
-    public float TextUpdateTime { get; set; } = 0.5f;
-    public Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
+    protected abstract string GetLabel(Player player);
+    protected abstract string GetHint(Player player);
+    protected abstract void OnValueChanged(Player? player);
+    private float TextUpdateTime { get; set; } = 0.5f;
+    protected Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
 
-    public void UpdateVisibility(Player? player)
+    private void UpdateVisibility(Player? player)
     {
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
@@ -37,8 +38,8 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     public virtual bool IsVisibleToPlayer(Player? player) => true;
 
     private List<Player> AvailableForPlayers { get; } = new();
-    
-    public IEnumerator<float> UpdateCoroutine(Player? player)
+
+    private IEnumerator<float> UpdateCoroutine(Player? player)
     {
         while (player != null)
         {
@@ -61,7 +62,8 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         _isInitialized = true;
         SettingBase.Register(new List<SettingBase>() { BuildBase(null) }, _=> false);
     }
-    public T GetSetting(Player? player) => LastReceivedValues.ContainsKey(player) ? LastReceivedValues[player].Cast<T>() : (T)BuildBase(player);
-    public abstract void UpdateOption(Player? player, bool overrideValue = true);
+
+    protected T GetSetting(Player? player) => LastReceivedValues.ContainsKey(player) ? LastReceivedValues[player].Cast<T>() : (T)BuildBase(player);
+    protected abstract void UpdateOption(Player? player, bool overrideValue = true);
     public abstract SettingBase BuildBase(Player? player);
 }
