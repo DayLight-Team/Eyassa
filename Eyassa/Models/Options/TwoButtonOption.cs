@@ -5,26 +5,26 @@ using Eyassa.Interfaces;
 namespace Eyassa.Models.Options;
 
 
-public abstract class ButtonOption : OptionBase<ButtonSetting>
+public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
 {
-    public abstract string GetButtonText(Player player);
-
-    public abstract float GetHoldTime(Player player);
+    public abstract string GetFirstButtonText(Player player);
+    public abstract string GetSecondButtonText(Player player);
+    public abstract bool GetIsSecondsButtonDefault(Player player);
     public override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.Cast<ButtonSetting>().UpdateSetting(GetButtonText(player), GetHoldTime(player), overrideValue);
+        setting.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue);
         setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
 
     public sealed override SettingBase BuildBase(Player? player)
     {
         if(player == null)
-            return new ButtonSetting(Id, "Default", "Default", 0, "Default", null, OnChanged);
+            return new TwoButtonsSetting(Id, "Default", "Default","Default",false, "Default", null, OnChanged);
         
-        return new ButtonSetting(Id, GetLabel(player), GetButtonText(player), GetHoldTime(player), GetHint(player), null,
+        return new TwoButtonsSetting(Id, GetLabel(player), GetFirstButtonText(player),GetSecondButtonText(player), GetIsSecondsButtonDefault(player) , GetHint(player), null,
             OnChanged);
     }
     

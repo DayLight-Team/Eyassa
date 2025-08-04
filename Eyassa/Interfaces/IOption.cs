@@ -6,7 +6,6 @@ namespace Eyassa.Interfaces;
 public interface IOption
 {
     internal int Id { get; }
-    public string CustomId { get; }
     bool IsVisibleToPlayer(Player? player);
 
     internal SettingBase BuildBase(Player? player);

@@ -2,9 +2,9 @@
 using Exiled.API.Features.Core.UserSettings;
 using Eyassa.Interfaces;
 
-namespace Eyassa.Models;
+namespace Eyassa.Models.Options;
 
-public abstract class SliderOption : OptionBase<SliderSetting>, IValueReceiver
+public abstract class SliderOption : OptionBase<SliderSetting>
 {
     
     public abstract float GetMin(Player player);
@@ -14,13 +14,13 @@ public abstract class SliderOption : OptionBase<SliderSetting>, IValueReceiver
     public virtual string GetStringFormat(Player player) => "0.##";
     public virtual string GetDisplayFormat(Player player) => "{0}";
 
-    public abstract void OnValueChanged(Player? player);
     public override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
-        BuildBase(player).Cast<SliderSetting>().UpdateSetting(GetMin(player), GetMax(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player));
-        GetSetting(player).UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        var setting = GetSetting(player);
+        setting.UpdateSetting(GetMin(player), GetMax(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player), overrideValue);
+        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
     public sealed override SettingBase BuildBase(Player? player)
     {

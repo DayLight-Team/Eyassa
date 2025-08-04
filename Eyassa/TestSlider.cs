@@ -1,11 +1,9 @@
 ﻿using Exiled.API.Features;
-using Eyassa.Attributes;
-using Eyassa.Models;
+using Eyassa.Models.Options;
 using PlayerRoles;
 
 namespace Eyassa;
 
-[Option("Eyassa.TestSlider")]
 public class TestSlider : SliderOption
 {
     public override string GetLabel(Player player) => player.Nickname + "'s rizz level";
