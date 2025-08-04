@@ -1,7 +1,7 @@
 ﻿using Exiled.API.Features;
 using Eyassa.Models.Options;
 
-namespace Eyassa;
+namespace Eyassa.Test.Options;
 
 public class TestButton : ButtonOption
 {

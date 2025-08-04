@@ -14,7 +14,9 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
+        var options = GetOptions(player);
         setting.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray());
+        LastSentOptions[player] = options;
         setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
 
@@ -22,9 +24,21 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
     {
         if(player == null)
             return new DropdownSetting(Id, "Default", new []{"Default"},onChanged: OnChanged);
-
-        return new DropdownSetting(Id, GetLabel(player), GetOptions(player), GetDefaultOptionIndex(player),
+        var options = GetOptions(player);
+        LastSentOptions[player] = options;
+        return new DropdownSetting(Id, GetLabel(player), options, GetDefaultOptionIndex(player),
             GetEntryType(player), GetHint(player), onChanged: OnChanged);
+
+    }
+
+    public Dictionary<Player, List<string>> LastSentOptions { get; } = new();
+    public List<string> GetLastSentOptions(Player? player)
+    {
+        if(player == null)
+            return new List<string>();
+        if(!LastSentOptions.ContainsKey(player))
+            LastSentOptions[player] = new List<string>();
+        return LastSentOptions[player];
     }
     
     private void OnChanged(Player? arg1, SettingBase arg2)

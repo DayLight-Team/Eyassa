@@ -1,29 +1,47 @@
 ﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
 using Eyassa.Interfaces;
+using Eyassa.Models;
 
 namespace Eyassa;
 
 public class SettingsManager
 {
-    public static List<IOption> Options { get; } = new();
+    public static List<SettingNode> Nodes { get; } = new();
     
     
     public static Dictionary<Player, List<int>> SentIds { get; } = new();
+    public static Dictionary<Player, List<int>> SentNodes { get; } = new();
     public static void SendToPlayer(Player? player)
     {
-        var seenSettings = Options.Where(x => x.IsVisibleToPlayer(player));
         
-
+        if(player == null)
+            return;
         if(!SentIds.ContainsKey(player))
             SentIds[player] = new();
-        var alreadySendSettings = Options.Where(x => !SentIds[player].Contains(x.Id));
-        foreach (var option in alreadySendSettings)
+        if(!SentNodes.ContainsKey(player))
+            SentNodes[player] = new();
+        
+        List<SettingBase> settings = [];
+        foreach (var node in Nodes.OrderBy(x=>x.GetPriority(player)))
         {
-            option.OnFirstUpdate(player);
+            
+            
+            settings.Add(new HeaderSetting(node.HeaderId, node.GetHeaderName(player), node.GetHeaderHintDescription(player), node.GetHeaderPadding(player)));
+            var first = node.Options.Where(x => !SentIds[player].Contains(x.Id));
+            foreach (var option in first)
+            {
+                option.OnFirstUpdate(player);
+            }
+            var options = node.Options.Where(x => x.IsVisibleToPlayer(player));
+            settings.AddRange(options.Select(x=>x.BuildBase(player)));
+            if (!SentNodes[player].Contains(node.HeaderId))
+            {
+                node.OnFirstUpdate(player);
+                SentNodes[player].Add(node.HeaderId); 
+            }
         }
-        var settings = seenSettings.Select(x => x.BuildBase(player)).ToList();
+        Log.Debug($"Sending {settings.Count} settings to {player.Nickname}");
         SettingBase.SendToPlayer(player, settings);
-        Log.Info($"Sent {settings.Count} to {player.Nickname}");
     }
 }

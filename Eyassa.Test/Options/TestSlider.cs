@@ -2,7 +2,7 @@
 using Eyassa.Models.Options;
 using PlayerRoles;
 
-namespace Eyassa;
+namespace Eyassa.Test.Options;
 
 public class TestSlider : SliderOption
 {
@@ -20,6 +20,5 @@ public class TestSlider : SliderOption
     public override void OnValueChanged(Player? player)
     {
         var setting = GetSetting(player);
-        Log.Info(setting.SliderValue);
     }
 }

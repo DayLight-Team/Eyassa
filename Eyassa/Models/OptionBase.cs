@@ -52,9 +52,12 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         Timing.RunCoroutine(UpdateCoroutine(player));
     }
 
+    private bool _isInitialized = false;
     public void Init()
     {
-        SettingsManager.Options.Add(this);
+        if(_isInitialized)
+            return;
+        _isInitialized = true;
         SettingBase.Register(new List<SettingBase>() { BuildBase(null) }, _=> false);
     }
     public T GetSetting(Player? player) => LastReceivedValues.ContainsKey(player) ? LastReceivedValues[player].Cast<T>() : (T)BuildBase(player);

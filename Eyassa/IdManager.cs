@@ -14,7 +14,6 @@ internal class IdManager
             randomNumber = Random.Range(0, int.MaxValue);
         UsedNumbers.Add(randomNumber);
         return randomNumber;
-        
     }
     
 }
