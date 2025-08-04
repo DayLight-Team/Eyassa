@@ -1,5 +1,4 @@
-# Eyassa
-## Even Yet another server-specific settings API wrapper for EXILED
+# Eyassa (Even Yet another server-specific settings API wrapper for EXILED)
 ---
 
 ## 🔧 Features
