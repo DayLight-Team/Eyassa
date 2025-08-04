@@ -22,6 +22,11 @@
 
 ---
 
+
+## 🤓 Code Documentation
+
+Yeah no im too lazy
+---
 ## 🧪 Example Option: `ButtonOption`
 
 ```csharp
