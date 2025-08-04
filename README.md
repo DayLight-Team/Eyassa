@@ -15,7 +15,7 @@
 
 ## 📦 Installation
 
-1. Download the latest release from [GitHub Releases](https://github.com/your-name/Eyassa/releases).
+1. Download the latest release from [GitHub Releases](https://github.com/Tiliboyy/Eyassa/releases).
 2. Place the `.dll` into your server's `Plugins/` folder.
 3. Start the server once to generate default configuration files.
 4. Create and register your own nodes to expose settings in-game.
