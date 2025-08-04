@@ -6,6 +6,7 @@ using Exiled.Loader;
 using Eyassa.Interfaces;
 using Eyassa.Managers;
 using Eyassa.Models;
+using HarmonyLib;
 using MEC;
 using Player = Exiled.Events.Handlers.Player;
 
@@ -21,15 +22,17 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 
     public override Version Version { get; } = new(1, 0, 0);
     public EyassaPlugin Instance { get; private set; }
-    
+
+    private Harmony Harmony { get; } = new("com.tili.eyassa");
     public override void OnEnabled()
     {
-        Player.Verified += Verified;
         Instance = this;
+        Harmony.PatchAll();
+        Player.Verified += OnVerified;
         base.OnEnabled();
     }
 
-    private void Verified(VerifiedEventArgs ev)
+    private static void OnVerified(VerifiedEventArgs ev)
     {
         SettingsManager.SendToPlayer(ev.Player);
     }
