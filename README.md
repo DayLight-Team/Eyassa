@@ -1,23 +1,19 @@
 # Eyassa
 
-**Eyassa** is a plugin for [EXILED](https://github.com/Exiled-Team/EXILED) that provides **server-specific, per-player settings** for SCP: Secret Laboratory servers.  
-It allows players to interact with configuration menus in-game and manage their own persistent settings, such as toggles, sliders, input fields, and more.
-
+**Eyassa** is a plugin for [EXILED](https://github.com/ExMod-Team/EXILED) that provides **server-specific, per-player settings** for SCP: Secret Laboratory servers.  
+It allows devs to handle SSS on a per player basis
 ---
 
 ## 🔧 Features
 
-- Player-specific settings (saved per SteamID)
-- Interactive in-game UI with customization
+
 - Built-in support for:
   - Buttons (`ButtonOption`)
+  - Two Button Options (`TwoButtonOption`)
   - Sliders (`SliderOption`)
-  - Toggles (`ToggleOption`)
+  - Dropdowns  (`DropdownOption`)
   - Input fields (`InputTextOption`, `TextAreaOption`)
-  - Dropdowns (`DropdownOption`)
 - Easy to extend with your own options and logic
-- Full control over runtime behavior on value changes
-
 ---
 
 ## 📦 Installation
