@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ayassa", "Ayassa\Ayassa.csproj", "{BE57DE68-7D15-4F23-86DD-69D3EB3EC614}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE57DE68-7D15-4F23-86DD-69D3EB3EC614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE57DE68-7D15-4F23-86DD-69D3EB3EC614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE57DE68-7D15-4F23-86DD-69D3EB3EC614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE57DE68-7D15-4F23-86DD-69D3EB3EC614}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
