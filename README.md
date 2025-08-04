@@ -28,11 +28,6 @@
 ## 🧪 Example Option: `ButtonOption`
 
 ```csharp
-using Exiled.API.Features;
-using Eyassa.Models.Options;
-
-namespace Eyassa.Test.Options;
-
 public class TestButton : ButtonOption
 {
     public override string GetLabel(Player player) => $"Hello {player.Nickname}";
@@ -53,12 +48,6 @@ public class TestButton : ButtonOption
 
 All options must be placed inside a SettingNode, which defines a section in the in-game menu.
 ```csharp
-using Exiled.API.Features;
-using Eyassa.Interfaces;
-using Eyassa.Models;
-
-namespace Eyassa.Test.Options;
-
 public class TestNode : SettingNode
 {
     public override string GetHeaderName(Player player) => "Test node";
