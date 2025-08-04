@@ -1,7 +1,5 @@
 # Eyassa
 ## Even Yet another server-specific settings API wrapper for EXILED
-
-### **Eyassa** is a plugin for [EXILED](https://github.com/ExMod-Team/EXILED) that allows devs to make **per-player*** server-specific-settings for SCP: Secret Laboratory servers.  
 ---
 
 ## 🔧 Features
