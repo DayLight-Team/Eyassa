@@ -1,6 +1,10 @@
 ﻿using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.Events.EventArgs.Player;
 using Exiled.Loader;
+using Eyassa.Models;
+using MEC;
+using Player = Exiled.Events.Handlers.Player;
 
 namespace Eyassa;
 
@@ -16,7 +20,18 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
     
     public override void OnEnabled()
     {
+        var testButton = new TestButton();
+        testButton.Init();
+        var testSlider = new TestSlider();
+        testSlider.Init();
+        Player.Verified += Verified;
         Instance = this;
         base.OnEnabled();
     }
+
+    private void Verified(VerifiedEventArgs ev)
+    {
+        SettingsManager.SendToPlayer(ev.Player);
+    }
+    
 }

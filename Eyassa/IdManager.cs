@@ -2,11 +2,11 @@
 
 namespace Eyassa;
 
-public class IdManager
+internal class IdManager
 {
     internal static List<int> UsedNumbers = new();
     
-    internal int GetNextId()
+    internal static int GetNextId()
     {
         int randomNumber = Random.Range(0, int.MaxValue);
 
@@ -14,6 +14,7 @@ public class IdManager
             randomNumber = Random.Range(0, int.MaxValue);
         UsedNumbers.Add(randomNumber);
         return randomNumber;
+        
     }
     
 }

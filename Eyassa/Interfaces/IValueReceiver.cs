@@ -4,7 +4,7 @@ namespace Eyassa.Interfaces;
 
 internal interface IValueReceiver
 {
-    void OnValueChanged(Player player);
+    void OnValueChanged(Player? player);
 }
 
 
