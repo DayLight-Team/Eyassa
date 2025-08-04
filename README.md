@@ -75,5 +75,5 @@ public class TestNode : SettingNode
 }
 ```
 
-Nodes need to be registered using `SettingsNode::Register();` 
+Nodes need to be registered using `SettingNode::Register();` 
 Example: `new TestNode().Register();`
