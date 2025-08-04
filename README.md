@@ -1,5 +1,6 @@
-# Eyassa (Even Yet another server-specific settings API wrapper for EXILED)
----
+# Eyassa 
+Even Yet another server-specific settings API wrapper for EXILED
+
 
 ## 🔧 Features
 
@@ -22,6 +23,10 @@
 
 ---
 
+
+## 🤓 Code Documentation
+
+Yeah no im too lazy
 ## 🧪 Example Option: `ButtonOption`
 
 ```csharp
