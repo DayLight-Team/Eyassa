@@ -2,17 +2,17 @@
 using Exiled.API.Features;
 using Exiled.Loader;
 
-namespace Ayassa;
+namespace Eyassa;
 
-public class AyassaPlugin : Plugin<Configs, AyassaTranslations>
+public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 {
-    public override string Name { get; } = "Ayassa";
+    public override string Name { get; } = "Eyassa";
 
     public override PluginPriority Priority { get; } = PluginPriority.First;
 
     public override Version Version { get; } = new(1, 0, 0);
 
-    public AyassaPlugin Instance { get; private set; }
+    public EyassaPlugin Instance { get; private set; }
     
     public override void OnEnabled()
     {

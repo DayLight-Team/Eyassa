@@ -1,6 +1,6 @@
 ﻿using Exiled.API.Interfaces;
 
-namespace Ayassa;
+namespace Eyassa;
 
 public class Configs : IConfig
 {
