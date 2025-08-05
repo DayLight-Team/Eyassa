@@ -11,7 +11,7 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
     protected abstract string GetSecondButtonText(Player player);
     protected abstract bool GetIsSecondsButtonDefault(Player player);
 
-    protected override void UpdateOption(Player? player, bool overrideValue = true)
+    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

@@ -21,7 +21,9 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
     public override PluginPriority Priority { get; } = PluginPriority.First;
 
     public override Version Version { get; } = new(1, 1, 0);
-    public EyassaPlugin Instance { get; private set; }
+    public static EyassaPlugin Instance { get; private set; }
+    
+    public IdManager IdManager { get; } = new IdManager();
 
     private Harmony Harmony { get; } = new("com.tili.eyassa");
     public override void OnEnabled()

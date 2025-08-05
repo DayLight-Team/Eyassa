@@ -14,7 +14,7 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
     protected abstract int GetMaxLength(Player player);
     protected abstract TMP_InputField.ContentType GetContentType(Player player);
 
-    protected override void UpdateOption(Player? player, bool overrideValue = true)
+    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

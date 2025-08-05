@@ -11,7 +11,7 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
     protected virtual int GetDefaultOptionIndex(Player player) => 0;
     protected virtual SSDropdownSetting.DropdownEntryType GetEntryType(Player player) => SSDropdownSetting.DropdownEntryType.Regular;
 
-    protected override void UpdateOption(Player? player, bool overrideValue = true)
+    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

@@ -6,6 +6,7 @@ namespace Eyassa.Test.Options;
 
 public class TestSlider : SliderOption
 {
+    public override string CustomId { get; } = "test_slider";
     protected override string GetLabel(Player player) => player.Nickname + "'s rizz level";
     protected override string GetHint(Player player) => $"Lowkey ka {player.Position}";
     protected override float GetMin(Player player) => 0;

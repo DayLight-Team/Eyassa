@@ -9,7 +9,7 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
 {
     protected abstract KeyCode GetSuggestedKey(Player player);
     protected virtual bool GetPreventInteractionOnGUI(Player player) => false;
-    protected override void UpdateOption(Player? player, bool overrideValue = true)
+    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
@@ -18,7 +18,7 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
         setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
 
-    public override SettingBase BuildBase(Player? player)
+    public sealed override SettingBase BuildBase(Player? player)
     {
         if(player == null)
             return new KeybindSetting(Id, "Default", KeyCode.None , true, "Default", null, OnChanged);

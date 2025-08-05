@@ -12,7 +12,7 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
     protected virtual SSTextArea.FoldoutMode GetFoldoutMode(Player player) => SSTextArea.FoldoutMode.NotCollapsable;
     protected virtual TextAlignmentOptions GetAlignment(Player player) => TextAlignmentOptions.TopLeft;
 
-    protected override void UpdateOption(Player? player, bool overrideValue = true)
+    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

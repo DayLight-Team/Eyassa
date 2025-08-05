@@ -5,6 +5,7 @@ namespace Eyassa.Test.Options;
 
 public class TestButton : ButtonOption
 {
+    public override string CustomId { get; } = "test_button";
     protected override string GetLabel(Player player) => $"Hello {player.Nickname}";
     protected override string GetButtonText(Player player) => $"Heal {player.MaxHealth - player.Health} HP";
     protected override string GetHint(Player player) => "Heals you to full health";

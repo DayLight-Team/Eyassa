@@ -72,7 +72,7 @@ public abstract class SettingNode
     }
 
 
-    protected virtual bool IsVisibleToPlayer(Player? player) => true;
+    public virtual bool IsVisibleToPlayer(Player? player) => true;
 
     private List<Player> AvailableForPlayers { get; } = new();
 

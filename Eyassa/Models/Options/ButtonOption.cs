@@ -11,7 +11,7 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
 
     protected virtual float GetHoldTime(Player player) => 0f;
 
-    protected override void UpdateOption(Player? player, bool overrideValue = true)
+    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

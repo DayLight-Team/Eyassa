@@ -13,7 +13,7 @@ public abstract class SliderOption : OptionBase<SliderSetting>
     protected virtual string GetStringFormat(Player player) => "0.##";
     protected virtual string GetDisplayFormat(Player player) => "{0}";
 
-    protected override void UpdateOption(Player? player, bool overrideValue = true)
+    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;

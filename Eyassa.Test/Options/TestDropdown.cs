@@ -6,6 +6,7 @@ namespace Eyassa.Test.Options;
 
 public class TestDropdown : DropdownOption
 {
+    public override string CustomId { get; } = "test_dropdown";
     protected override string GetLabel(Player player) => player.Nickname + "'s rizz level";
 
     protected override string GetHint(Player player) => "idfk";

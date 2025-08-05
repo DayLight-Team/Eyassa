@@ -5,6 +5,7 @@ namespace Eyassa.Test.Options;
 
 public class TestTwoButton : TwoButtonOption
 {
+    public override string CustomId { get; } = "test_two_button";
     protected override string GetLabel(Player player) => player.Nickname + "'s rizz level";
 
     protected override string GetHint(Player player) => "idfk";

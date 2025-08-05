@@ -11,12 +11,13 @@ namespace Eyassa.Models;
 
 public abstract class OptionBase<T> : IOption where T : SettingBase
 {
-    public virtual int Id { get; } = IdManager.GetNextId();
+    public int Id => EyassaPlugin.Instance.IdManager.GetId(CustomId);
+    public abstract string CustomId { get; }
     protected abstract string GetLabel(Player player);
     protected virtual string GetHint(Player player) => null;
     protected abstract void OnValueChanged(Player? player);
-    private float TextUpdateTime { get; set; } = 0.5f;
-    protected Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
+    protected virtual float UpdateDelaySeconds { get; set; } = 0.5f;
+    internal Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
 
     private void UpdateVisibility(Player? player)
     {
@@ -45,13 +46,17 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         {
             UpdateOption(player);
             UpdateVisibility(player);
-            yield return Timing.WaitForSeconds(TextUpdateTime);
+            yield return Timing.WaitForSeconds(UpdateDelaySeconds);
         }
     }
 
-    public void OnFirstUpdate(Player? player)
+    void IOption.OnFirstUpdateInternal(Player? player)
     {
         Timing.RunCoroutine(UpdateCoroutine(player));
+        OnFirstUpdate(player);
+    }
+    public virtual void OnFirstUpdate(Player? player)
+    {
     }
 
     private bool _isInitialized = false;

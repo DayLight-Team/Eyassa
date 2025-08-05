@@ -20,6 +20,7 @@
     <ItemGroup>
       <PackageReference Include="ExMod.Exiled" Version="9.7.1" />
       <PackageReference Include="Lib.Harmony" Version="2.3.6" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <ItemGroup>

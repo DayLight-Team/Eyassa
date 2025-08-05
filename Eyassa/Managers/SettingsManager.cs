@@ -22,10 +22,8 @@ internal class SettingsManager
             SentNodes[player] = new();
         
         List<SettingBase> settings = [];
-        foreach (var node in Nodes.OrderByDescending(x=>x.GetPriority(player)))
+        foreach (var node in Nodes.Where(x=>x.IsVisibleToPlayer(player)).OrderByDescending(x=>x.GetPriority(player)))
         {
-            
-            
             settings.Add(new HeaderSetting(node.HeaderId, node.GetHeaderName(player), node.GetHeaderHintDescription(player), node.GetHeaderPadding(player)));
             var first = node.Options.Where(x => !SentIds[player].Contains(x.Id));
             foreach (var option in first)

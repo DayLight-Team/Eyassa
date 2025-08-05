@@ -6,6 +6,7 @@ namespace Eyassa.Test.Options;
 
 public class TestInputText : TextInputOption
 {
+    public override string CustomId { get; } = "test_input_text";
     protected override string GetLabel(Player player) => player.Nickname + $"'s rizz level {player.Rotation}";
     protected override string GetHint(Player player) => $"Lowkey ka {player.Position}";
 
