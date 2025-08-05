@@ -69,3 +69,10 @@ public class TestNode : SettingNode
 
 Nodes need to be registered using `SettingNode::Register();` 
 Example: `new TestNode().Register();`
+
+##  📝 Credits & Acknowledgments
+
+Some class and structural ideas in this project were inspired by
+[Yassa](https://github.com/bladuk/Yassa), another settings system for EXILED under the Apache 2.0 License.
+
+This project reuses or adapts class names such as SettingNode, ButtonOption, and interface design patterns introduced in Yassa.
