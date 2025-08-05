@@ -16,7 +16,6 @@ public class IdManager
     {
         Load();
     }
-
     private int GetSettingId(string customId)
     {
         if (_idMap == null)
@@ -60,13 +59,6 @@ public class IdManager
         {
             _idMap = new Dictionary<string, int>();
         }
-        foreach (var id in _idMap.Where(id => !UsedNumbers.Add(id.Value)))
-        {
-            Log.Error($"Id {id.Value} is already used");
-            SetSettingId(id.Key, GetNextId());
-        }
- 
-  
     }
 
     private void Save()

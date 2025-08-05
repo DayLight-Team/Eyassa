@@ -14,13 +14,12 @@ namespace Eyassa;
 
 public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 {
-        public override string Name { get; } = "Even Yet another server-specific settings API wrapper for EXILED";
-
+    public override string Name { get; } = "Even Yet another server-specific settings API wrapper for EXILED";
+    public override Version Version { get; } = new(1, 2, 0);
     public override string Author { get; } = "Tili :3";
 
     public override PluginPriority Priority { get; } = PluginPriority.First;
 
-    public override Version Version { get; } = new(1, 1, 0);
     public static EyassaPlugin Instance { get; private set; }
     
     public IdManager IdManager { get; } = new IdManager();
