@@ -17,9 +17,9 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
         var setting = GetSetting(player);
         setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
-
     public sealed override SettingBase BuildBase(Player? player)
     {
+        Log.Info(player == null);
         if (player == null)
             return new HeaderSetting(Id, "Default" ,"Default", false);
         return new HeaderSetting(Id, GetLabel(player), GetHint(player), GetApplyPadding(player));

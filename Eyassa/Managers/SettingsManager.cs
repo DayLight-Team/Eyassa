@@ -10,7 +10,7 @@ internal class SettingsManager
     
     
     internal static Dictionary<Player, List<int>> SentIds { get; } = new();
-    internal static Dictionary<Player, List<int>> SentNodes { get; } = new();
+    internal static Dictionary<Player, List<SettingNode>> SentNodes { get; } = new();
     internal static void SendToPlayer(Player? player)
     {
         
@@ -32,11 +32,12 @@ internal class SettingsManager
             }
             var options = node.Options.Where(x => x.IsVisibleToPlayer(player));
             settings.AddRange(options.Select(x=>x.BuildBase(player)));
-            if (!SentNodes[player].Contains(node.HeaderId))
-            {
-                node.OnFirstUpdate(player);
-                SentNodes[player].Add(node.HeaderId); 
-            }
+        }
+
+        foreach (var node in Nodes.Where(node => !SentNodes[player].Contains(node)))
+        {
+            SentNodes[player].Add(node); 
+            node.OnFirstUpdate(player);
         }
         Log.Debug($"Sending {settings.Count} settings to {player.Nickname}");
         SettingBase.SendToPlayer(player, settings);

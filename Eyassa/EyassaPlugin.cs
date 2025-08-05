@@ -14,7 +14,7 @@ namespace Eyassa;
 
 public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 {
-    public override string Name { get; } = "Even Yet another server-specific settings API wrapper for EXILED";
+    public override string Name { get; } = "Eyassa";
     public override Version Version { get; } = new(1, 2, 0);
     public override string Author { get; } = "Tili :3";
 

@@ -41,15 +41,33 @@ public abstract class SettingNode
 
     private IEnumerator<float> UpdateCoroutine(Player? player)
     {
-        while (player != null)
+        while (true)
         {
-            UpdateOptions(player);
-            UpdateVisibility(player);
+            if (player == null)
+            {
+                yield break;
+            }
+            try
+            {
+                UpdateNode(player);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
             yield return Timing.WaitForSeconds(NodeUpdateTime);
         }
     }
 
-    private void UpdateOptions(Player player)
+    public void UpdateNode(Player? player)
+    {
+        if(player == null)
+            return;
+        UpdateLabel(player);
+        UpdateVisibility(player);
+    }
+
+    private void UpdateLabel(Player player)
     {
         _headerSetting?.UpdateLabelAndHint(GetHeaderName(player), GetHeaderHintDescription(player));
     }
@@ -58,16 +76,15 @@ public abstract class SettingNode
     {
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
-        switch (isVisible)
+        if (isVisible && !didSeeBefore)
         {
-            case true when !didSeeBefore:
-                AvailableForPlayers.Add(player);
-                SettingsManager.SendToPlayer(player);
-                break;
-            case false when didSeeBefore:
-                AvailableForPlayers.Remove(player);
-                SettingsManager.SendToPlayer(player);
-                break;
+            AvailableForPlayers.Add(player);
+            SettingsManager.SendToPlayer(player);
+        }
+        if(!isVisible && didSeeBefore)
+        {
+            AvailableForPlayers.Remove(player);
+            SettingsManager.SendToPlayer(player);
         }
     }
 
