@@ -22,7 +22,7 @@ internal class SettingsManager
             SentNodes[player] = new();
         
         List<SettingBase> settings = [];
-        foreach (var node in Nodes.OrderBy(x=>x.GetPriority(player)))
+        foreach (var node in Nodes.OrderByDescending(x=>x.GetPriority(player)))
         {
             
             

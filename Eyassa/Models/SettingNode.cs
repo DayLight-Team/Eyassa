@@ -16,17 +16,22 @@ public abstract class SettingNode
     public abstract string GetHeaderName(Player player);
     public abstract string GetHeaderHintDescription(Player player);
     public virtual bool GetHeaderPadding(Player player) => false;
-    public abstract IOption[] Options { get; }
+    public abstract List<IOption> Options { get; }
     public virtual int GetPriority(Player player) => 0;
     protected virtual float NodeUpdateTime { get; } = 0.5f;
     public void Register()
     {
         _headerSetting = new HeaderSetting(HeaderId, "Default");
+        RegisterSettings();
+        SettingsManager.Nodes.Add(this);
+    }
+
+    public void RegisterSettings()
+    {
         foreach (var option in Options)
         {
-            option.Init();
+            option.Register();
         }
-        SettingsManager.Nodes.Add(this);
     }
 
     internal void OnFirstUpdate(Player? player)

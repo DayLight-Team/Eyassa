@@ -9,7 +9,7 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
 {
     protected abstract string GetButtonText(Player player);
 
-    protected abstract float GetHoldTime(Player player);
+    protected virtual float GetHoldTime(Player player) => 0f;
 
     protected override void UpdateOption(Player? player, bool overrideValue = true)
     {

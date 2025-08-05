@@ -8,9 +8,7 @@ namespace Eyassa.Models.Options;
 public abstract class KeybindOption : OptionBase<KeybindSetting>
 {
     protected abstract KeyCode GetSuggestedKey(Player player);
-
-    protected abstract bool GetPreventInteractionOnGUI(Player player);
-
+    protected virtual bool GetPreventInteractionOnGUI(Player player) => false;
     protected override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)

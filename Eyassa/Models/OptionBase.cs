@@ -13,7 +13,7 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
 {
     public virtual int Id { get; } = IdManager.GetNextId();
     protected abstract string GetLabel(Player player);
-    protected abstract string GetHint(Player player);
+    protected virtual string GetHint(Player player) => null;
     protected abstract void OnValueChanged(Player? player);
     private float TextUpdateTime { get; set; } = 0.5f;
     protected Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
@@ -55,7 +55,7 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     }
 
     private bool _isInitialized = false;
-    public void Init()
+    public void Register()
     {
         if(_isInitialized)
             return;

@@ -11,5 +11,5 @@ public interface IOption
     internal SettingBase BuildBase(Player? player);
 
     internal void OnFirstUpdate(Player? player);
-    internal void Init();
+    internal void Register();
 }
