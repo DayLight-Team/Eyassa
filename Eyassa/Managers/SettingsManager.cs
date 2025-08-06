@@ -1,25 +1,25 @@
-﻿using Exiled.API.Features;
+﻿using System.Diagnostics;
+using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
 using Eyassa.Models;
 
 namespace Eyassa.Managers;
 
-internal class SettingsManager
+public class SettingsManager
 {
     internal static List<SettingNode> Nodes { get; } = new();
     
     
     internal static Dictionary<Player, List<int>> SentIds { get; } = new();
     internal static Dictionary<Player, List<SettingNode>> SentNodes { get; } = new();
-    internal static void SendToPlayer(Player? player)
+    public static void UpdatePlayer(Player? player)
     {
-        
         if(player == null)
             return;
         if(!SentIds.ContainsKey(player))
-            SentIds[player] = new();
+            SentIds[player] = [];
         if(!SentNodes.ContainsKey(player))
-            SentNodes[player] = new();
+            SentNodes[player] = [];
         
         List<SettingBase> settings = [];
         foreach (var node in Nodes.Where(x=>x.IsVisibleToPlayer(player)).OrderByDescending(x=>x.GetPriority(player)))
@@ -28,6 +28,7 @@ internal class SettingsManager
             var first = node.Options.Where(x => !SentIds[player].Contains(x.Id));
             foreach (var option in first)
             {
+                SentIds[player].Add(option.Id);
                 option.OnFirstUpdateInternal(player);
             }
             var options = node.Options.Where(x => x.IsVisibleToPlayer(player));

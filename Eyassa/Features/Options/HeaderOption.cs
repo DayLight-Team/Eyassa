@@ -10,18 +10,7 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
     
     public virtual bool GetApplyPadding(Player player) => false;
 
-    public sealed override void OnFirstUpdate(Player? player)
-    {
-        UpdateOption(player);
-        base.OnFirstUpdate(player);
-    }
-    
-    protected sealed override void OnValueChanged(Player player)
-    {
-        throw new InvalidOperationException("This method should never be called.");
-    }
-
-    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
+    public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
@@ -33,5 +22,9 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
         if (player == null)
             return new HeaderSetting(Id, "Default" ,"Default", false);
         return new HeaderSetting(Id, GetLabel(player), GetHint(player), GetApplyPadding(player));
+    }
+    protected sealed override void OnValueChanged(Player player)
+    {
+        throw new InvalidOperationException("This method should never be called.");
     }
 }

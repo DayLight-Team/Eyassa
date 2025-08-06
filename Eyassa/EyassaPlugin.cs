@@ -21,22 +21,35 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
     public override PluginPriority Priority { get; } = PluginPriority.First;
 
     public static EyassaPlugin Instance { get; private set; }
-    
-    public IdManager IdManager { get; } = new IdManager();
-
     private Harmony Harmony { get; } = new("com.tili.eyassa");
     public override void OnEnabled()
     {
         Instance = this;
         Harmony.PatchAll();
-        Player.Verified += OnVerified;
+        Timing.RunCoroutine(UpdateCoroutine());
         base.OnEnabled();
     }
-
-    private static void OnVerified(VerifiedEventArgs ev)
+    private static IEnumerator<float> UpdateCoroutine()
     {
-        SettingsManager.SendToPlayer(ev.Player);
+        while (true)
+        {
+            foreach (var player in Exiled.API.Features.Player.List)
+            {
+                var sendSettings = false;
+                
+                foreach (var node in SettingsManager.Nodes)
+                {
+                    if(node.CheckForUpdateRequirement(player))
+                        sendSettings = true;
+                    node.UpdateNode(player);
+                    node.UpdateOptions(player);
+                }
+                if(sendSettings)
+                    SettingsManager.UpdatePlayer(player);
+            }
+            yield return Timing.WaitForSeconds(0.5f);
+
+        }
     }
-    
 }
 

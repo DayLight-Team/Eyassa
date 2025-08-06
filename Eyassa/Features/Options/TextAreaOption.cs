@@ -11,7 +11,7 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
     protected virtual SSTextArea.FoldoutMode GetFoldoutMode(Player player) => SSTextArea.FoldoutMode.NotCollapsable;
     protected virtual TextAlignmentOptions GetAlignment(Player player) => TextAlignmentOptions.TopLeft;
 
-    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
+    public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
@@ -30,11 +30,20 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
         throw new InvalidOperationException("This method should never be called.");
     }
 
-    private void OnChanged(Player arg1, SettingBase arg2)
+    private void OnChanged(Player? player, SettingBase setting)
     {
-        if(Id != arg2.Id)
+        if(player == null)
             return;
-        LastReceivedValues[arg1] = arg2;
-        OnValueChanged(arg1);
+        if(Id != setting.Id)
+            return;
+        LastReceivedValues[player] = setting;
+        try
+        {
+            OnValueChanged(player);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e);
+        }
     }
 }

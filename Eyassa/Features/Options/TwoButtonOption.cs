@@ -11,7 +11,7 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
     protected abstract string GetSecondButtonText(Player player);
     protected abstract bool GetIsSecondsButtonDefault(Player player);
 
-    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
+    public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
@@ -29,14 +29,20 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
             OnChanged);
     }
     
-    private void OnChanged(Player? arg1, SettingBase arg2)
+    private void OnChanged(Player? player, SettingBase setting)
     {
-        if(arg2.Id != Id)
+        if(player == null)
             return;
-        if(arg1 == null)
+        if(Id != setting.Id)
             return;
-        
-        LastReceivedValues[arg1] = arg2;
-        OnValueChanged(arg1);
+        LastReceivedValues[player] = setting;
+        try
+        {
+            OnValueChanged(player);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e);
+        }
     }
 }

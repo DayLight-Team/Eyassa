@@ -10,8 +10,9 @@ public interface IOption
     public bool IsVisibleToPlayer(Player player);
 
     internal SettingBase BuildBase(Player? player);
-
     internal void OnFirstUpdate(Player? player);
+    internal bool CheckForUpdateRequirement(Player? player);
+    internal void UpdateOption(Player? player, bool overrideValue = true);
     internal void OnFirstUpdateInternal(Player? player);
     internal void Register();
 }

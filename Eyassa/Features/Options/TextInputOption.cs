@@ -12,7 +12,7 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
     protected virtual int GetMaxLength(Player player) => 32;
     protected virtual TMP_InputField.ContentType GetContentType(Player player) => TMP_InputField.ContentType.Standard;
 
-    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
+    public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
@@ -26,11 +26,20 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
         return new UserTextInputSetting(Id, GetLabel(player),GetPlaceholder(player),  GetMaxLength(player), GetContentType(player), GetHint(player));
     }
 
-    private void OnChanged(Player arg1, SettingBase arg2)
+    private void OnChanged(Player? player, SettingBase setting)
     {
-        if(Id != arg2.Id)
+        if(player == null)
             return;
-        LastReceivedValues[arg1] = arg2;
-        OnValueChanged(arg1);
+        if(Id != setting.Id)
+            return;
+        LastReceivedValues[player] = setting;
+        try
+        {
+            OnValueChanged(player);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e);
+        }
     }
 }

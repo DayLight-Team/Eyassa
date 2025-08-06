@@ -9,7 +9,8 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
 {
     protected abstract KeyCode GetSuggestedKey(Player player);
     protected virtual bool GetPreventInteractionOnGUI(Player player) => false;
-    protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
+
+    public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
@@ -27,11 +28,23 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
             OnChanged);
     }
 
-    private void OnChanged(Player arg1, SettingBase arg2)
+    private void OnChanged(Player player, SettingBase setting)
     {
-        if(Id != arg2.Id)
+        if(Id != setting.Id)
             return;
-        LastReceivedValues[arg1] = arg2;
-        OnValueChanged(arg1);
+        if(Id != setting.Id)
+            return;
+        if(!setting.Cast<KeybindSetting>().IsPressed)
+            return;
+        LastReceivedValues[player] = setting;
+        try
+        {
+            OnValueChanged(player);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e);
+            throw;
+        }
     }
 }

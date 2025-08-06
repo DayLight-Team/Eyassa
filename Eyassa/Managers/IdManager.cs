@@ -7,6 +7,8 @@ namespace Eyassa.Managers;
 
 public class IdManager
 {
+    internal static IdManager Instance { get; } = new IdManager();
+
     internal static readonly HashSet<int> UsedNumbers = new();
     private static string FolderPath => Path.Combine(Paths.Configs, "EyassaCache");
     private static string FilePath => Path.Combine(FolderPath, $"{Server.Port}.json");

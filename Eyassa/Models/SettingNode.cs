@@ -18,7 +18,6 @@ public abstract class SettingNode
     public virtual bool GetHeaderPadding(Player player) => false;
     public abstract List<IOption> Options { get; }
     public virtual int GetPriority(Player player) => 0;
-    protected virtual float NodeUpdateTime { get; } = 0.5f;
     public void Register()
     {
         _headerSetting = new HeaderSetting(HeaderId, "Default");
@@ -37,59 +36,58 @@ public abstract class SettingNode
 
     internal void OnFirstUpdateInternal(Player? player)
     {
-        Timing.RunCoroutine(UpdateCoroutine(player));
         OnFirstUpdate(player);
     }
-
-    private IEnumerator<float> UpdateCoroutine(Player? player)
-    {
-        while (true)
-        {
-            if (player == null)
-            {
-                yield break;
-            }
-            try
-            {
-                UpdateNode(player);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-            yield return Timing.WaitForSeconds(NodeUpdateTime);
-        }
-    }
+    
 
     public void UpdateNode(Player? player)
     {
-        if(player == null)
-            return;
+        if(player == null) return;
         UpdateLabel(player);
-        UpdateVisibility(player);
     }
 
+    public void UpdateOptions(Player? player)
+    {
+        if(player == null)
+            return;
+        foreach (var option in Options)
+        {
+            option.UpdateOption(player);
+        }
+    }
     private void UpdateLabel(Player player)
     {
         _headerSetting?.UpdateLabelAndHint(GetHeaderName(player), GetHeaderHintDescription(player));
     }
 
-    private void UpdateVisibility(Player? player)
+    public bool CheckForUpdateRequirement(Player? player)
     {
-        if(player == null)
-            return;
+        if (player == null)
+            return false;
+
+
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
-        if (isVisible && !didSeeBefore)
+        bool update = false;
+        switch (isVisible)
         {
-            AvailableForPlayers.Add(player);
-            SettingsManager.SendToPlayer(player);
+            case true when !didSeeBefore:
+                AvailableForPlayers.Add(player);
+                update = true;
+                break;
+            case false when didSeeBefore:
+                AvailableForPlayers.Remove(player);
+                update = true;
+                break;
         }
-        if(!isVisible && didSeeBefore)
+
+
+        if (update)
         {
-            AvailableForPlayers.Remove(player);
-            SettingsManager.SendToPlayer(player);
+            Log.Info($"Node {GetType().Name} scheduling update...");
+            return update;
         }
+        return Options.Any(x=>x.CheckForUpdateRequirement(player));
     }
 
 
