@@ -1,9 +1,9 @@
 ﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
-using Eyassa.Interfaces;
+using Eyassa.Models;
 using UnityEngine;
 
-namespace Eyassa.Models.Options;
+namespace Eyassa.Features.Options;
 
 public abstract class KeybindOption : OptionBase<KeybindSetting>
 {

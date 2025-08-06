@@ -1,8 +1,8 @@
 ﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
-using Eyassa.Interfaces;
+using Eyassa.Models;
 
-namespace Eyassa.Models.Options;
+namespace Eyassa.Features.Options;
 
 
 public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
@@ -32,6 +32,8 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
     private void OnChanged(Player? arg1, SettingBase arg2)
     {
         if(arg2.Id != Id)
+            return;
+        if(arg1 == null)
             return;
         
         LastReceivedValues[arg1] = arg2;

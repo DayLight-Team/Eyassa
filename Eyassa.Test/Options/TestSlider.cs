@@ -1,5 +1,5 @@
 ﻿using Exiled.API.Features;
-using Eyassa.Models.Options;
+using Eyassa.Features.Options;
 using PlayerRoles;
 
 namespace Eyassa.Test.Options;
@@ -8,12 +8,12 @@ public class TestSlider : SliderOption
 {
     public override string CustomId { get; } = "test_slider";
     protected override string GetLabel(Player player) => player.Nickname + "'s rizz level";
-    protected override string GetHint(Player player) => $"Lowkey ka {player.Position}";
+    protected override string? GetHint(Player player) => $"Lowkey ka {player.Position}";
     protected override float GetMin(Player player) => 0;
     protected override float GetMax(Player player) => 50;
     protected override float GetDefaultValue(Player player) => 30;
 
-    public override bool IsVisibleToPlayer(Player? player)
+    public override bool IsVisibleToPlayer(Player player)
     {
         return player.Role.Type == RoleTypeId.Tutorial;
     }

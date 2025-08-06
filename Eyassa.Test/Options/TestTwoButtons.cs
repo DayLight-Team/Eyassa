@@ -1,5 +1,5 @@
 ﻿using Exiled.API.Features;
-using Eyassa.Models.Options;
+using Eyassa.Features.Options;
 
 namespace Eyassa.Test.Options;
 
@@ -8,7 +8,7 @@ public class TestTwoButton : TwoButtonOption
     public override string CustomId { get; } = "test_two_button";
     protected override string GetLabel(Player player) => player.Nickname + "'s rizz level";
 
-    protected override string GetHint(Player player) => "idfk";
+    protected override string? GetHint(Player player) => "idfk";
 
     protected override void OnValueChanged(Player? player)
     {

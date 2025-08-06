@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Exiled.API.Features;
+﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
+using Eyassa.Models;
 using UserSettings.ServerSpecific;
 
-namespace Eyassa.Models.Options;
+namespace Eyassa.Features.Options;
 
 public abstract class DropdownOption : OptionBase<DropdownSetting>
 {

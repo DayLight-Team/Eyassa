@@ -7,7 +7,7 @@ public interface IOption
 {
     internal int Id { get; }
     public string CustomId { get; }
-    public bool IsVisibleToPlayer(Player? player);
+    public bool IsVisibleToPlayer(Player player);
 
     internal SettingBase BuildBase(Player? player);
 

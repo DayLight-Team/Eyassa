@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Exiled.API.Features;
-using Eyassa.Models.Options;
+using Eyassa.Features.Options;
 
 namespace Eyassa.Test.Options;
 
@@ -9,7 +9,7 @@ public class TestDropdown : DropdownOption
     public override string CustomId { get; } = "test_dropdown";
     protected override string GetLabel(Player player) => player.Nickname + "'s rizz level";
 
-    protected override string GetHint(Player player) => "idfk";
+    protected override string? GetHint(Player player) => "idfk";
 
     protected override void OnValueChanged(Player? player)
     {

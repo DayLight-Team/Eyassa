@@ -14,14 +14,33 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     public int Id => EyassaPlugin.Instance.IdManager.GetId(CustomId);
     public abstract string CustomId { get; }
     protected abstract string GetLabel(Player player);
-    protected virtual string GetHint(Player player) => null;
-    protected abstract void OnValueChanged(Player? player);
+    protected virtual string? GetHint(Player player) => null;
+    protected abstract void OnValueChanged(Player player);
     protected virtual float UpdateDelaySeconds { get; set; } = 0.5f;
     internal Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
+    
+    public virtual bool IsVisibleToPlayer(Player player) => true;
 
+    private List<Player> AvailableForPlayers { get; } = [];
+
+    private IEnumerator<float> UpdateCoroutine(Player? player)
+    {
+        // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+        while (player != null)
+        {
+            UpdateOption(player);
+            yield return Timing.WaitForSeconds(UpdateDelaySeconds);
+        }
+    }
+
+    public void UpdateOption(Player? player)
+    {
+        UpdateVisibility(player);
+    }
     private void UpdateVisibility(Player? player)
     {
-        Log.Debug($"Update visibility {CustomId}");
+        if(player == null)
+            return;
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
         if (isVisible && !didSeeBefore)
@@ -33,21 +52,6 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         {
             AvailableForPlayers.Remove(player);
             SettingsManager.SendToPlayer(player);
-        }
-    }
-
-    
-    public virtual bool IsVisibleToPlayer(Player? player) => true;
-
-    private List<Player> AvailableForPlayers { get; } = new();
-
-    private IEnumerator<float> UpdateCoroutine(Player? player)
-    {
-        while (player != null)
-        {
-            UpdateOption(player);
-            UpdateVisibility(player);
-            yield return Timing.WaitForSeconds(UpdateDelaySeconds);
         }
     }
 

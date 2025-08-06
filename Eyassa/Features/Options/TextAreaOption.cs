@@ -1,11 +1,10 @@
 ﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
-using Eyassa.Interfaces;
+using Eyassa.Models;
 using TMPro;
 using UserSettings.ServerSpecific;
-using YamlDotNet.Serialization;
 
-namespace Eyassa.Models.Options;
+namespace Eyassa.Features.Options;
 
 public abstract class TextAreaOption : OptionBase<TextInputSetting>
 {
@@ -24,6 +23,11 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
         if (player == null)
             return new TextInputSetting(Id, "Default", onChanged: OnChanged);
         return new TextInputSetting(Id, GetLabel(player), GetFoldoutMode(player), GetAlignment(player), GetHint(player));
+    }
+
+    protected sealed override void OnValueChanged(Player player)
+    {
+        throw new InvalidOperationException("This method should never be called.");
     }
 
     private void OnChanged(Player arg1, SettingBase arg2)

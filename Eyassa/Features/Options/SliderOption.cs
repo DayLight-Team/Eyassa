@@ -1,8 +1,8 @@
 ﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
-using Eyassa.Interfaces;
+using Eyassa.Models;
 
-namespace Eyassa.Models.Options;
+namespace Eyassa.Features.Options;
 
 public abstract class SliderOption : OptionBase<SliderSetting>
 {

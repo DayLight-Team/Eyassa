@@ -1,18 +1,16 @@
 ﻿using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
-using Eyassa.Interfaces;
+using Eyassa.Models;
 using TMPro;
-using UserSettings.ServerSpecific;
-using YamlDotNet.Serialization;
 
-namespace Eyassa.Models.Options;
+namespace Eyassa.Features.Options;
 
 public abstract class TextInputOption : OptionBase<UserTextInputSetting>
 {
 
-    protected abstract string GetPlaceholder(Player player);
-    protected abstract int GetMaxLength(Player player);
-    protected abstract TMP_InputField.ContentType GetContentType(Player player);
+    protected virtual string GetPlaceholder(Player player) => "";
+    protected virtual int GetMaxLength(Player player) => 32;
+    protected virtual TMP_InputField.ContentType GetContentType(Player player) => TMP_InputField.ContentType.Standard;
 
     protected sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {

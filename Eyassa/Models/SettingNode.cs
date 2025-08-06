@@ -76,6 +76,8 @@ public abstract class SettingNode
 
     private void UpdateVisibility(Player? player)
     {
+        if(player == null)
+            return;
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
         if (isVisible && !didSeeBefore)

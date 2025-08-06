@@ -1,5 +1,5 @@
 ﻿using Exiled.API.Features;
-using Eyassa.Models.Options;
+using Eyassa.Features.Options;
 using TMPro;
 
 namespace Eyassa.Test.Options;
@@ -8,7 +8,7 @@ public class TestInputText : TextInputOption
 {
     public override string CustomId { get; } = "test_input_text";
     protected override string GetLabel(Player player) => player.Nickname + $"'s rizz level {player.Rotation}";
-    protected override string GetHint(Player player) => $"Lowkey ka {player.Position}";
+    protected override string? GetHint(Player player) => $"Lowkey ka {player.Position}";
 
     protected override void OnValueChanged(Player? player)
     {
