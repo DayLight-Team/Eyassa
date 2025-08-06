@@ -39,4 +39,8 @@
         <Reference Include="YamlDotNet" HintPath="$(EXILED_REFERENCES)\YamlDotNet.dll" Private="false" />
     </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="cd bin &#xA;cd Debug&#xA;cd net48&#xA;xcopy /Y &quot;Eyassa.dll&quot; &quot;%AppData%\Exiled\Plugins\&quot;" />
+    </Target>
+
 </Project>

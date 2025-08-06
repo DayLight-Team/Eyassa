@@ -21,6 +21,7 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
 
     private void UpdateVisibility(Player? player)
     {
+        Log.Debug($"Update visibility {CustomId}");
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
         if (isVisible && !didSeeBefore)

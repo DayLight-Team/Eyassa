@@ -33,10 +33,12 @@ public abstract class SettingNode
             option.Register();
         }
     }
+    protected virtual void OnFirstUpdate(Player? player){}
 
-    internal void OnFirstUpdate(Player? player)
+    internal void OnFirstUpdateInternal(Player? player)
     {
         Timing.RunCoroutine(UpdateCoroutine(player));
+        OnFirstUpdate(player);
     }
 
     private IEnumerator<float> UpdateCoroutine(Player? player)

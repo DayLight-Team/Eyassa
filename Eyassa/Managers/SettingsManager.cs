@@ -28,7 +28,7 @@ internal class SettingsManager
             var first = node.Options.Where(x => !SentIds[player].Contains(x.Id));
             foreach (var option in first)
             {
-                option.OnFirstUpdate(player);
+                option.OnFirstUpdateInternal(player);
             }
             var options = node.Options.Where(x => x.IsVisibleToPlayer(player));
             settings.AddRange(options.Select(x=>x.BuildBase(player)));
@@ -37,7 +37,7 @@ internal class SettingsManager
         foreach (var node in Nodes.Where(node => !SentNodes[player].Contains(node)))
         {
             SentNodes[player].Add(node); 
-            node.OnFirstUpdate(player);
+            node.OnFirstUpdateInternal(player);
         }
         Log.Debug($"Sending {settings.Count} settings to {player.Nickname}");
         SettingBase.SendToPlayer(player, settings);
