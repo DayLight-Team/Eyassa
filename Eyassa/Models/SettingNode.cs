@@ -68,24 +68,14 @@ public abstract class SettingNode
 
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
-        bool update = false;
         switch (isVisible)
         {
             case true when !didSeeBefore:
                 AvailableForPlayers.Add(player);
-                update = true;
-                break;
+                return true;
             case false when didSeeBefore:
                 AvailableForPlayers.Remove(player);
-                update = true;
-                break;
-        }
-
-
-        if (update)
-        {
-            Log.Info($"Node {GetType().Name} scheduling update...");
-            return update;
+                return true;
         }
         return Options.Any(x=>x.CheckForUpdateRequirement(player));
     }

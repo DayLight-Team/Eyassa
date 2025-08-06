@@ -32,18 +32,6 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
 
     private void OnChanged(Player? player, SettingBase setting)
     {
-        if(player == null)
-            return;
-        if(Id != setting.Id)
-            return;
-        LastReceivedValues[player] = setting;
-        try
-        {
-            OnValueChanged(player);
-        }
-        catch (Exception e)
-        {
-            Log.Error(e);
-        }
+        throw new InvalidOperationException("This method should never be called.");
     }
 }

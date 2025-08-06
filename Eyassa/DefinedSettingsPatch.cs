@@ -13,8 +13,6 @@ public static class DefinedSettingsPatch
         IdManager.UsedNumbers.Clear();
         foreach (var setting in value)
         {
-            if(IdManager.UsedNumbers.Contains(setting.SettingId))
-                continue;
             IdManager.UsedNumbers.Add(setting.SettingId);
         }
     }
