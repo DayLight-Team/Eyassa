@@ -27,16 +27,23 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
 
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
+        bool update = false;
+        bool isNew = false;
         switch (isVisible)
         {
             case true when !didSeeBefore:
+                isNew = true;
                 AvailableForPlayers.Add(player);
-                return true;
+                update = true;
+                break;
             case false when didSeeBefore:
                 AvailableForPlayers.Remove(player);
-                return true;
+                update = true;
+                break;
         }
-        return false;
+
+
+        return update;
     }
 
     void IOption.OnFirstUpdateInternal(Player? player)

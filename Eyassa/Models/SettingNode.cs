@@ -68,16 +68,30 @@ public abstract class SettingNode
 
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
+        var update = false;
         switch (isVisible)
         {
             case true when !didSeeBefore:
                 AvailableForPlayers.Add(player);
-                return true;
+                update = true;
+                break;
             case false when didSeeBefore:
                 AvailableForPlayers.Remove(player);
-                return true;
+                update = true;
+                break;
         }
-        return Options.Any(x=>x.CheckForUpdateRequirement(player));
+        
+        var optionUpdate = false;
+
+        
+        foreach (var unused in Options.Where(option => option.CheckForUpdateRequirement(player)))
+        {
+            optionUpdate = true;
+            update = true;
+        }
+           
+        
+        return optionUpdate || update;
     }
 
 
