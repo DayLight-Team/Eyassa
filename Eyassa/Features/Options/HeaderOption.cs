@@ -10,6 +10,8 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
     
     public virtual bool GetApplyPadding(Player player) => false;
 
+    public override bool IsIdCached => false;
+    public sealed override string CustomId { get; } = "";
     public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)

@@ -11,6 +11,10 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
 
     protected virtual float GetHoldTime(Player player) => 0f;
 
+    public override bool IsIdCached => false;
+
+    public sealed override string CustomId { get; } = "";
+
     public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)

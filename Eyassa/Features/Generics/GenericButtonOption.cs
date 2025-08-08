@@ -4,7 +4,7 @@ using Eyassa.Features.Options;
 
 namespace Eyassa.Features.Generics;
 
-public class GenericButtonOption(string customId,
+public class GenericButtonOption(
     string label,
     string buttonText,
     string? hint = null,
@@ -12,7 +12,6 @@ public class GenericButtonOption(string customId,
     Action<Player, ButtonSetting>? onPressed = null,  
     Predicate<Player>? isVisible = null) : ButtonOption
 {
-    public override string CustomId { get; } = customId;
     protected override string GetLabel(Player player) => label;
     protected override string? GetHint(Player player) => hint;
     protected override string GetButtonText(Player player) => buttonText;

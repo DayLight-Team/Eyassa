@@ -11,13 +11,15 @@ namespace Eyassa.Models;
 
 public abstract class OptionBase<T> : IOption where T : SettingBase
 {
-    public int Id => IdManager.Instance.GetId(CustomId);
+    public int Id { get; private set; } = -1;
+
     public abstract string CustomId { get; }
     protected abstract string GetLabel(Player player);
     protected virtual string? GetHint(Player player) => null;
     protected abstract void OnValueChanged(Player player);
     internal Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
     public virtual bool IsVisibleToPlayer(Player player) => true;
+    public virtual bool IsIdCached => true;
     private List<Player> AvailableForPlayers { get; } = [];
     public bool CheckForUpdateRequirement(Player? player)
     {
@@ -62,6 +64,10 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         if(_isInitialized)
             return;
         _isInitialized = true;
+        if (IsIdCached)
+            Id = IdManager.Instance.GetId(CustomId);
+        else
+            Id = IdManager.GetNextId();
         SettingBase.Register(new List<SettingBase>() { BuildBase(null) }, _=> false);
     }
 

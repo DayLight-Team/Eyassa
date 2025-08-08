@@ -10,7 +10,8 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
 {
     protected virtual SSTextArea.FoldoutMode GetFoldoutMode(Player player) => SSTextArea.FoldoutMode.NotCollapsable;
     protected virtual TextAlignmentOptions GetAlignment(Player player) => TextAlignmentOptions.TopLeft;
-
+    public override bool IsIdCached => false;
+    public sealed override string CustomId { get; } = "";
     public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
