@@ -15,7 +15,7 @@ namespace Eyassa;
 public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 {
     public override string Name { get; } = "Eyassa";
-    public override Version Version { get; } = new(2, 0, 0);
+    public override Version Version { get; } = new(2, 1, 0);
     public override string Author { get; } = "Tili :3";
 
     public override PluginPriority Priority { get; } = PluginPriority.First;
