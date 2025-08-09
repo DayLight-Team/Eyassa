@@ -16,8 +16,8 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray());
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray());
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
 
     public sealed override SettingBase BuildBase(Player? player)
@@ -35,6 +35,8 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
     
     private void OnChanged(Player? player, SettingBase setting)
     {
+        if(!IsRegistered)
+            return;
         if(player == null)
             return;
         if(Id != setting.Id)

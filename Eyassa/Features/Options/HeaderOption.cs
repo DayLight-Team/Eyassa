@@ -17,7 +17,7 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
     public sealed override SettingBase BuildBase(Player? player)
     {
@@ -27,6 +27,8 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
     }
     protected sealed override void OnValueChanged(Player player)
     {
+        if(!IsRegistered)
+            return;
         throw new InvalidOperationException("This method should never be called.");
     }
 }

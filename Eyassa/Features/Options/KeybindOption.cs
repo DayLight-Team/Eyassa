@@ -16,7 +16,7 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
             return;
         var setting = GetSetting(player);
 
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
 
     public sealed override SettingBase BuildBase(Player? player)
@@ -30,7 +30,7 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
 
     private void OnChanged(Player player, SettingBase setting)
     {
-        if(Id != setting.Id)
+        if(!IsRegistered)
             return;
         if(Id != setting.Id)
             return;

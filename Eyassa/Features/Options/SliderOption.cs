@@ -18,8 +18,8 @@ public abstract class SliderOption : OptionBase<SliderSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.UpdateSetting(GetMin(player), GetMax(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player), overrideValue);
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.UpdateSetting(GetMin(player), GetMax(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player), overrideValue);
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
     public sealed override SettingBase BuildBase(Player? player)
     {

@@ -17,10 +17,11 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
     public sealed override SettingBase BuildBase(Player? player)
     {
+        
         if (player == null)
             return new UserTextInputSetting(Id, "Default", onChanged: OnChanged);
         return new UserTextInputSetting(Id, GetLabel(player),GetPlaceholder(player),  GetMaxLength(player), GetContentType(player), GetHint(player));
@@ -28,6 +29,8 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
 
     private void OnChanged(Player? player, SettingBase setting)
     {
+        if(!IsRegistered)
+            return;
         if(player == null)
             return;
         if(Id != setting.Id)

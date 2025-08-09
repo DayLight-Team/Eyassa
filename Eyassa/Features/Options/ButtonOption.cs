@@ -20,14 +20,17 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.Cast<ButtonSetting>().UpdateSetting(GetButtonText(player), GetHoldTime(player), overrideValue);
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.Cast<ButtonSetting>().UpdateSetting(GetButtonText(player), GetHoldTime(player), overrideValue);
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
 
     public sealed override SettingBase BuildBase(Player? player)
     {
         if(player == null)
-            return new ButtonSetting(Id, "Default", "Default", 0, "Default", null, OnChanged);
+            return new ButtonSetting(Id, "Default", "Default", 0, "Default", null, OnChanged)
+            {
+                Base = {  }
+            };
         
         return new ButtonSetting(Id, GetLabel(player), GetButtonText(player), GetHoldTime(player), GetHint(player), null,
             OnChanged);
@@ -35,6 +38,8 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
     
     private void OnChanged(Player? player, SettingBase setting)
     {
+        if(!IsRegistered)
+            return;
         if(player == null)
             return;
         if(Id != setting.Id)

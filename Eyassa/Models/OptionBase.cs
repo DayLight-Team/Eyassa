@@ -5,12 +5,14 @@ using Exiled.API.Features.Core.UserSettings;
 using Eyassa.Interfaces;
 using Eyassa.Managers;
 using MEC;
+using UnityEngine;
 using UserSettings.ServerSpecific;
 
 namespace Eyassa.Models;
 
 public abstract class OptionBase<T> : IOption where T : SettingBase
 {
+    public bool IsDefault = false;
     public int Id { get; private set; } = -1;
 
     public virtual bool SendOnJoin { get; } = true;
@@ -25,29 +27,36 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     private List<Player> AvailableForPlayers { get; } = [];
     bool IOption.CheckForUpdate(Player? player)
     {
-        if (player == null)
-            return false;
-        var didSeeBefore = AvailableForPlayers.Contains(player);
-        var isVisible = IsVisibleToPlayer(player);
-        bool update = false;
-        switch (isVisible)
+        try
         {
-            case true when !didSeeBefore:
-                AvailableForPlayers.Add(player);
-                update = true;
-                break;
-            case false when didSeeBefore:
-                AvailableForPlayers.Remove(player);
-                update = true;
-                break;
+            if (player == null)
+                return false;
+            var didSeeBefore = AvailableForPlayers.Contains(player);
+            var isVisible = IsVisibleToPlayer(player);
+            bool update = false;
+            switch (isVisible)
+            {
+                case true when !didSeeBefore:
+                    AvailableForPlayers.Add(player);
+                    update = true;
+                    break;
+                case false when didSeeBefore:
+                    AvailableForPlayers.Remove(player);
+                    update = true;
+                    break;
+            }
+            return update;
+
         }
-        return update;
+        catch (Exception e)
+        {
+            Log.Error(e);
+            return false;
+        }
     }
 
     void IOption.OnFirstUpdateInternal(Player? player)
     {
-        UpdateOption(player);
-        OnFirstUpdate(player);
     }
 
     public bool IsCurrentlyVisible(Player player)
@@ -59,20 +68,30 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     {
     }
 
-    private bool _isInitialized = false;
     public void Register()
     {
-        if(_isInitialized)
+        if(IsRegistered)
             return;
-        _isInitialized = true;
-        if (IsIdCached)
-            Id = IdManager.Instance.GetId(CustomId);
-        else
-            Id = IdManager.GetNextId();
+        Id = IsIdCached ? IdManager.Instance.GetId(CustomId) : IdManager.GetNextId();
         SettingBase.Register(new List<SettingBase>() { BuildBase(null) }, _=> false);
+        IsRegistered = true;
     }
 
-    protected T GetSetting(Player? player) => player != null && LastReceivedValues.ContainsKey(player) ? LastReceivedValues[player].Cast<T>() : (T)BuildBase(player);
+    protected bool IsRegistered;
+    protected T? GetSetting(Player? player)
+    {
+        try
+        {
+            var value = player != null && LastReceivedValues.TryGetValue(player, out var receivedValue) ? receivedValue.Cast<T>() : (T)BuildBase(player);
+            return value;
+        }
+        catch (Exception e)
+        {
+            Log.Error(e);
+            return (T)BuildBase(null);
+        }
+    }
     public abstract void UpdateOption(Player? player, bool overrideValue = true);
+    
     public abstract SettingBase BuildBase(Player? player);
 }

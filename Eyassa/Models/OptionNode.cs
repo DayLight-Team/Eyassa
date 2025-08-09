@@ -36,7 +36,14 @@ public abstract class OptionNode
             return;
         foreach (var option in Options)
         {
-            option.UpdateOption(player);
+            try
+            {
+                option.UpdateOption(player);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
     }
 

@@ -16,8 +16,8 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue);
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue);
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
     }
 
     public sealed override SettingBase BuildBase(Player? player)
@@ -31,6 +31,8 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
     
     private void OnChanged(Player? player, SettingBase setting)
     {
+        if(!IsRegistered)
+            return;
         if(player == null)
             return;
         if(Id != setting.Id)
