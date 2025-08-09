@@ -1,7 +1,10 @@
 ﻿using System.Diagnostics;
 using Exiled.API.Features;
 using Exiled.API.Features.Core.UserSettings;
+using Eyassa.Interfaces;
 using Eyassa.Models;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Eyassa.Managers;
 
@@ -23,10 +26,17 @@ public class OptionsManager
             foreach (var option in first)
             {
                 SentIds[player].Add(option.Id);
-                option.OnFirstUpdateInternal(player);
+                try
+                {
+                    option.OnFirstUpdateInternal(player);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
             }
             var options = node.Options.Where(x => x.IsVisibleToPlayer(player));
-            settings.AddRange(options.Select(x=>x.BuildBase(player)));
+            settings.AddRange(options.Select(x=> GetSelector(x, player)));
         }
         Log.Debug($"Sending {settings.Count} settings to {player.Nickname}");
         SettingBase.SendToPlayer(player, settings);
@@ -44,12 +54,31 @@ public class OptionsManager
             foreach (var option in node.Options)
             {
                 SentIds[player].Add(option.Id);
-                option.OnFirstUpdateInternal(player);
+                try
+                {
+                    option.OnFirstUpdateInternal(player);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
             }
             var options = node.Options.Where(x => x.SendOnJoin);
-            settings.AddRange(options.Select(x=>x.BuildBase(player)));
+            settings.AddRange(options.Select(x=> GetSelector(x, player)));
         }
         Log.Debug($"OnJoined: Sending {settings.Count} settings to {player.Nickname}");
         SettingBase.SendToPlayer(player, settings);
+    }
+    private static SettingBase GetSelector(IOption arg, Player player)
+    {
+        try
+        {
+            return arg.BuildBase(player);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e);
+            return new TextInputSetting(Random.Range(0, int.MaxValue), $"Error: {e}");
+        }
     }
 }

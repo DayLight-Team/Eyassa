@@ -54,7 +54,16 @@ public abstract class OptionNode
 
 
         var didSeeBefore = AvailableForPlayers.Contains(player);
-        var isVisible = IsVisibleToPlayer(player);
+        bool isVisible;
+        try
+        {
+            isVisible = IsVisibleToPlayer(player);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e);
+            return false;
+        }
         var update = false;
         switch (isVisible)
         {

@@ -8,6 +8,7 @@ using Eyassa.Managers;
 using Eyassa.Models;
 using HarmonyLib;
 using MEC;
+using UnityEngine;
 using Player = Exiled.Events.Handlers.Player;
 
 namespace Eyassa;
@@ -50,18 +51,26 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
         {
             foreach (var player in Exiled.API.Features.Player.List)
             {
-                if(JoiningPlayers.Contains(player))
-                    continue;
-                var sendSettings = false;
-                
-                foreach (var node in OptionsManager.Nodes)
+
+                try
                 {
-                    if(node.CheckForUpdateRequirement(player))
-                        sendSettings = true;
-                    node.UpdateNode(player);
+                    if(JoiningPlayers.Contains(player))
+                        continue;
+                    var sendSettings = false;
+                
+                    foreach (var node in OptionsManager.Nodes)
+                    {
+                        if(node.CheckForUpdateRequirement(player))
+                            sendSettings = true;
+                        node.UpdateNode(player);
+                    }
+                    if(sendSettings)
+                        OptionsManager.UpdatePlayer(player);
                 }
-                if(sendSettings)
-                    OptionsManager.UpdatePlayer(player);
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
             }
             yield return Timing.WaitForSeconds(0.5f);
 
