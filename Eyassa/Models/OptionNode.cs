@@ -8,45 +8,29 @@ using MEC;
 
 namespace Eyassa.Models;
 
-public abstract class SettingNode
+public abstract class OptionNode
 {
-    internal int HeaderId { get; } = IdManager.GetNextId();
-
-    private HeaderSetting? _headerSetting;
-    public abstract string GetHeaderName(Player player);
-    public abstract string GetHeaderHintDescription(Player player);
-    public virtual bool GetHeaderPadding(Player player) => false;
     public abstract List<IOption> Options { get; }
-    public virtual int GetPriority(Player player) => 0;
+    public virtual int Priority { get; set; } = 0;
+    public virtual bool IsVisibleToPlayer(Player? player) => true;
+    private List<Player> AvailableForPlayers { get; } = new();
+
     public void Register()
     {
-        _headerSetting = new HeaderSetting(HeaderId, "Default");
-        RegisterSettings();
-        SettingsManager.Nodes.Add(this);
+        UpdateOptions();
+        OptionsManager.Nodes.Add(this);
     }
 
-    public void RegisterSettings()
+    public void UpdateOptions()
     {
         foreach (var option in Options)
         {
             option.Register();
         }
     }
-    protected virtual void OnFirstUpdate(Player? player){}
 
-    internal void OnFirstUpdateInternal(Player? player)
-    {
-        OnFirstUpdate(player);
-    }
-    
-
+    public List<IOption> GetVisibleOptions(Player? player) => Options.Where(x => x.IsCurrentlyVisible(player)).ToList();
     public void UpdateNode(Player? player)
-    {
-        if(player == null) return;
-        UpdateLabel(player);
-    }
-
-    public void UpdateOptions(Player? player)
     {
         if(player == null)
             return;
@@ -54,10 +38,6 @@ public abstract class SettingNode
         {
             option.UpdateOption(player);
         }
-    }
-    private void UpdateLabel(Player player)
-    {
-        _headerSetting?.UpdateLabelAndHint(GetHeaderName(player), GetHeaderHintDescription(player));
     }
 
     public bool CheckForUpdateRequirement(Player? player)
@@ -84,7 +64,7 @@ public abstract class SettingNode
         var optionUpdate = false;
 
         
-        foreach (var unused in Options.Where(option => option.CheckForUpdateRequirement(player)))
+        foreach (var unused in Options.Where(option => option.CheckForUpdate(player)))
         {
             optionUpdate = true;
             update = true;
@@ -93,10 +73,4 @@ public abstract class SettingNode
         
         return optionUpdate || update;
     }
-
-
-    public virtual bool IsVisibleToPlayer(Player? player) => true;
-
-    private List<Player> AvailableForPlayers { get; } = new();
-
 }

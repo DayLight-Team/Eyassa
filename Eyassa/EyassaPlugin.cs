@@ -15,7 +15,7 @@ namespace Eyassa;
 public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 {
     public override string Name { get; } = "Eyassa";
-    public override Version Version { get; } = new(1, 2, 0);
+    public override Version Version { get; } = new(2, 0, 0);
     public override string Author { get; } = "Tili :3";
 
     public override PluginPriority Priority { get; } = PluginPriority.First;
@@ -39,15 +39,8 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 
     private static void Verified(VerifiedEventArgs ev)
     {
-        foreach (var node in SettingsManager.Nodes)
-        {
-            node.CheckForUpdateRequirement(ev.Player);
-            node.Options.ForEach(x=>x.CheckForUpdateRequirement(ev.Player));
-        }
-
-        SettingsManager.UpdatePlayer(ev.Player);
+        OptionsManager.OnJoined(ev.Player);
         JoiningPlayers.Remove(ev.Player);
-
     }
 
     private static List<Exiled.API.Features.Player> JoiningPlayers { get; } = new();
@@ -61,15 +54,14 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
                     continue;
                 var sendSettings = false;
                 
-                foreach (var node in SettingsManager.Nodes)
+                foreach (var node in OptionsManager.Nodes)
                 {
                     if(node.CheckForUpdateRequirement(player))
                         sendSettings = true;
                     node.UpdateNode(player);
-                    node.UpdateOptions(player);
                 }
                 if(sendSettings)
-                    SettingsManager.UpdatePlayer(player);
+                    OptionsManager.UpdatePlayer(player);
             }
             yield return Timing.WaitForSeconds(0.5f);
 

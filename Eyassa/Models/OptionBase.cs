@@ -13,6 +13,8 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
 {
     public int Id { get; private set; } = -1;
 
+    public virtual bool SendOnJoin { get; } = true;
+
     public abstract string CustomId { get; }
     protected abstract string GetLabel(Player player);
     protected virtual string? GetHint(Player player) => null;
@@ -21,20 +23,16 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     public virtual bool IsVisibleToPlayer(Player player) => true;
     public virtual bool IsIdCached => true;
     private List<Player> AvailableForPlayers { get; } = [];
-    public bool CheckForUpdateRequirement(Player? player)
+    bool IOption.CheckForUpdate(Player? player)
     {
         if (player == null)
             return false;
-
-
         var didSeeBefore = AvailableForPlayers.Contains(player);
         var isVisible = IsVisibleToPlayer(player);
         bool update = false;
-        bool isNew = false;
         switch (isVisible)
         {
             case true when !didSeeBefore:
-                isNew = true;
                 AvailableForPlayers.Add(player);
                 update = true;
                 break;
@@ -43,17 +41,20 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
                 update = true;
                 break;
         }
-
-
         return update;
     }
 
     void IOption.OnFirstUpdateInternal(Player? player)
     {
-        CheckForUpdateRequirement(player);
         UpdateOption(player);
         OnFirstUpdate(player);
     }
+
+    public bool IsCurrentlyVisible(Player player)
+    {
+        return AvailableForPlayers.Contains(player);
+    }
+
     public virtual void OnFirstUpdate(Player? player)
     {
     }
