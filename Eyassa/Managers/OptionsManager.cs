@@ -28,7 +28,7 @@ public class OptionsManager
                 SentIds[player].Add(option.Id);
                 try
                 {
-                    option.OnFirstUpdateInternal(player);
+                    option.OnFirstUpdate(player);
                 }
                 catch (Exception e)
                 {
@@ -56,7 +56,7 @@ public class OptionsManager
                 SentIds[player].Add(option.Id);
                 try
                 {
-                    option.OnFirstUpdateInternal(player);
+                    option.OnFirstUpdate(player);
                 }
                 catch (Exception e)
                 {

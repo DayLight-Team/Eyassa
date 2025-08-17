@@ -17,7 +17,9 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+
+
     }
     public sealed override SettingBase BuildBase(Player? player)
     {

@@ -21,7 +21,9 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
             return;
         var setting = GetSetting(player);
         setting?.Cast<ButtonSetting>().UpdateSetting(GetButtonText(player), GetHoldTime(player), overrideValue);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+
+
     }
 
     public sealed override SettingBase BuildBase(Player? player)

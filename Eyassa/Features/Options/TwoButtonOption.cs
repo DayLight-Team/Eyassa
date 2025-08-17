@@ -17,7 +17,9 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
             return;
         var setting = GetSetting(player);
         setting?.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player));
+        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+
+
     }
 
     public sealed override SettingBase BuildBase(Player? player)

@@ -12,7 +12,6 @@ namespace Eyassa.Models;
 
 public abstract class OptionBase<T> : IOption where T : SettingBase
 {
-    public bool IsDefault = false;
     public int Id { get; private set; } = -1;
 
     public virtual bool SendOnJoin { get; } = true;
@@ -54,11 +53,7 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
             return false;
         }
     }
-
-    void IOption.OnFirstUpdateInternal(Player? player)
-    {
-    }
-
+    
     public bool IsCurrentlyVisible(Player player)
     {
         return AvailableForPlayers.Contains(player);
@@ -78,7 +73,7 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     }
 
     protected bool IsRegistered;
-    protected T? GetSetting(Player? player)
+    protected T GetSetting(Player? player)
     {
         try
         {
