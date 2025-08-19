@@ -16,7 +16,7 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue);
+        setting?.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue, filter: player1 => player1 == player);
         setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
 
 

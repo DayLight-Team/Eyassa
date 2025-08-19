@@ -18,7 +18,7 @@ public abstract class SliderOption : OptionBase<SliderSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.UpdateSetting(GetMin(player), GetMax(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player), overrideValue);
+        setting?.UpdateSetting(GetMin(player), GetMax(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player), overrideValue,filter: player1 => player1 == player);
         setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
 
 

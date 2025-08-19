@@ -16,7 +16,7 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray());
+        setting?.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray(),overrideValue, filter: player1 => player1 == player);
         setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
     }
 

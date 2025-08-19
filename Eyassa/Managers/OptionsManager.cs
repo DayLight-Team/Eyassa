@@ -78,7 +78,7 @@ public class OptionsManager
         catch (Exception e)
         {
             Log.Error(e);
-            return new TextInputSetting(Random.Range(0, int.MaxValue), $"Error: {e}");
+            return new TextInputSetting(IdManager.GetNextId(), $"Error: {e}");
         }
     }
 }

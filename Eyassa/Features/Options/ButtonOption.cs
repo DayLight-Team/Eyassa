@@ -20,7 +20,7 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.Cast<ButtonSetting>().UpdateSetting(GetButtonText(player), GetHoldTime(player), overrideValue);
+        setting?.Cast<ButtonSetting>().UpdateSetting(GetButtonText(player), GetHoldTime(player), overrideValue, filter: player1 => player1 == player);
         setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
 
 
