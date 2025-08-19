@@ -18,8 +18,6 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
         var setting = GetSetting(player);
         setting?.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray());
         setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
-
-
     }
 
     public sealed override SettingBase BuildBase(Player? player)

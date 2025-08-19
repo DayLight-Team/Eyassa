@@ -21,12 +21,16 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 
     public override PluginPriority Priority { get; } = PluginPriority.First;
 
-    public static EyassaPlugin Instance { get; private set; }
+    public static EyassaPlugin? Instance { get; private set; }
     private Harmony Harmony { get; } = new("com.tili.eyassa");
+
+    public bool IsLoaded { get; private set; } = false;
     public override void OnEnabled()
     {
         Instance = this;
         Player.Verified += Verified;
+
+        IsLoaded = true;
         Player.Joined += Joined;
         Harmony.PatchAll();
         Timing.RunCoroutine(UpdateCoroutine());

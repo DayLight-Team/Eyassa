@@ -67,6 +67,11 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     {
         if(IsRegistered)
             return;
+        if (EyassaPlugin.Instance == null || EyassaPlugin.Instance.IsLoaded)
+        {
+            Log.Error("Trying to register an option before Eyassa is loaded");
+            return;
+        }
         Id = IsIdCached ? IdManager.Instance.GetId(CustomId) : IdManager.GetNextId();
         SettingBase.Register(new List<SettingBase>() { BuildBase(null) }, _=> false);
         IsRegistered = true;

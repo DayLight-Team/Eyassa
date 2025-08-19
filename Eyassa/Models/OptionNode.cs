@@ -17,6 +17,11 @@ public abstract class OptionNode
 
     public void Register()
     {
+        if (EyassaPlugin.Instance == null || EyassaPlugin.Instance.IsLoaded)
+        {
+            Log.Error("Trying to register an node before Eyassa is loaded");
+            return;
+        }
         UpdateOptions();
         OptionsManager.Nodes.Add(this);
     }
