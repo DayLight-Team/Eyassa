@@ -15,5 +15,6 @@ public interface IOption
     internal void OnFirstUpdate(Player? player);
     internal bool CheckForUpdate(Player? player);
     internal void UpdateOption(Player? player, bool overrideValue = true);
+    internal void OnSentSettingInternal(Player? player);
     internal void Register();
 }

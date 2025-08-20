@@ -9,12 +9,12 @@ public class IdManager
 {
     internal static IdManager Instance { get; } = new IdManager();
 
-    internal static readonly HashSet<int> UsedNumbers = new();
+    internal readonly static HashSet<int> UsedNumbers = new();
     private static string FolderPath => Path.Combine(Paths.Configs, "EyassaCache");
     private static string FilePath => Path.Combine(FolderPath, $"{Server.Port}.json");
 
     private Dictionary<string, int>? _idMap;
-    internal IdManager()
+    private IdManager()
     {
         Load();
     }
@@ -65,7 +65,7 @@ public class IdManager
 
     private void Save()
     {
-        string json = JsonConvert.SerializeObject(_idMap, Formatting.Indented);
+        var json = JsonConvert.SerializeObject(_idMap, Formatting.Indented);
         File.WriteAllText(FilePath, json);
     }
 
@@ -78,7 +78,7 @@ public class IdManager
     }
     internal static int GetNextId()
     {
-        int randomNumber = Random.Range(0, int.MaxValue);
+        var randomNumber = Random.Range(0, int.MaxValue);
 
         while (UsedNumbers.Contains(randomNumber))
             randomNumber = Random.Range(0, int.MaxValue);

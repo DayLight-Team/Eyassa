@@ -17,7 +17,7 @@ public abstract class OptionNode
 
     public void Register()
     {
-        if (EyassaPlugin.Instance == null || EyassaPlugin.Instance.IsLoaded)
+        if (EyassaPlugin.Instance == null || !EyassaPlugin.Instance.IsLoaded)
         {
             Log.Error("Trying to register an node before Eyassa is loaded");
             return;
@@ -52,7 +52,9 @@ public abstract class OptionNode
         }
     }
 
-    public bool CheckForUpdateRequirement(Player? player)
+
+
+    public bool CheckSendRequired(Player? player)
     {
         if (player == null)
             return false;

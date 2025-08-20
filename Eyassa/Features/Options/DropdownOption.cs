@@ -2,6 +2,7 @@
 using Exiled.API.Features.Core.UserSettings;
 using Eyassa.Models;
 using UserSettings.ServerSpecific;
+using HarmonyLib;
 
 namespace Eyassa.Features.Options;
 
@@ -11,12 +12,13 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
     protected virtual int GetDefaultOptionIndex(Player player) => 0;
     protected virtual SSDropdownSetting.DropdownEntryType GetEntryType(Player player) => SSDropdownSetting.DropdownEntryType.Regular;
 
+    
     public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray(),overrideValue, filter: player1 => player1 == player);
+        setting?.Cast<DropdownSetting>().UpdateSetting(GetOptions(player).ToArray(),overrideValue);
         setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
     }
 

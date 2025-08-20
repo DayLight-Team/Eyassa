@@ -28,57 +28,13 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
     public override void OnEnabled()
     {
         Instance = this;
-        Player.Verified += Verified;
-
+        Player.Verified += OptionsManager.OnVerified;
         IsLoaded = true;
-        Player.Joined += Joined;
         Harmony.PatchAll();
-        Timing.RunCoroutine(UpdateCoroutine());
         base.OnEnabled();
     }
+    
 
-    private static void Joined(JoinedEventArgs ev)
-    {
-        JoiningPlayers.Add(ev.Player);
-    }
 
-    private static void Verified(VerifiedEventArgs ev)
-    {
-        OptionsManager.OnJoined(ev.Player);
-        JoiningPlayers.Remove(ev.Player);
-    }
-
-    private static List<Exiled.API.Features.Player> JoiningPlayers { get; } = new();
-    private static IEnumerator<float> UpdateCoroutine()
-    {
-        while (true)
-        {
-            foreach (var player in Exiled.API.Features.Player.List)
-            {
-
-                try
-                {
-                    if(JoiningPlayers.Contains(player))
-                        continue;
-                    var sendSettings = false;
-                
-                    foreach (var node in OptionsManager.Nodes)
-                    {
-                        if(node.CheckForUpdateRequirement(player))
-                            sendSettings = true;
-                        node.UpdateNode(player);
-                    }
-                    if(sendSettings)
-                        OptionsManager.UpdatePlayer(player);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
-            }
-            yield return Timing.WaitForSeconds(0.5f);
-
-        }
-    }
 }
 

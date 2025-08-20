@@ -67,7 +67,7 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     {
         if(IsRegistered)
             return;
-        if (EyassaPlugin.Instance == null || EyassaPlugin.Instance.IsLoaded)
+        if (EyassaPlugin.Instance == null || !EyassaPlugin.Instance.IsLoaded)
         {
             Log.Error("Trying to register an option before Eyassa is loaded");
             return;
@@ -76,7 +76,15 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         SettingBase.Register(new List<SettingBase>() { BuildBase(null) }, _=> false);
         IsRegistered = true;
     }
-
+    protected virtual void OnSentSetting(Player player)
+    {
+        
+    }
+    void IOption.OnSentSettingInternal(Player player)
+    {
+        OnSentSetting(player);
+        UpdateOption(player);
+    }
     protected bool IsRegistered;
     protected T GetSetting(Player? player)
     {
