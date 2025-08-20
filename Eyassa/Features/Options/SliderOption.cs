@@ -6,6 +6,7 @@ namespace Eyassa.Features.Options;
 
 public abstract class SliderOption : OptionBase<SliderSetting>
 {
+
     protected abstract float GetMin(Player player);
     protected abstract float GetMax(Player player);
     protected abstract float GetDefaultValue(Player player);
@@ -13,6 +14,10 @@ public abstract class SliderOption : OptionBase<SliderSetting>
     protected virtual string GetStringFormat(Player player) => "0.##";
     protected virtual string GetDisplayFormat(Player player) => "{0}";
 
+    internal override void OnRegisteredInternal()
+    {
+        OriginalDefinition = new SliderSetting(Id, "Default", 0, 0, 0, onChanged: OnChanged);
+    }
     public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
@@ -23,13 +28,11 @@ public abstract class SliderOption : OptionBase<SliderSetting>
 
 
     }
-    public sealed override SettingBase BuildBase(Player? player)
+    public sealed override SettingBase BuildBase(Player player)
     {
-        if (player == null)
-            return new SliderSetting(Id, "Default", 0, 0, 0, onChanged: OnChanged);
         return new SliderSetting(Id, GetLabel(player), GetMin(player), GetMax(player), GetDefaultValue(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player));
     }
-
+    protected abstract void OnValueChanged(Player player, float value);
     private void OnChanged(Player? player, SettingBase setting)
     {
         if(player == null)
@@ -39,7 +42,7 @@ public abstract class SliderOption : OptionBase<SliderSetting>
         LastReceivedValues[player] = setting;
         try
         {
-            OnValueChanged(player);
+            OnValueChanged(player, setting.Cast<SliderSetting>().SliderValue);
         }
         catch (Exception e)
         {

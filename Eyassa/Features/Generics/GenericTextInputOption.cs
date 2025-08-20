@@ -18,7 +18,7 @@ public class GenericTextInputOption(
     public override string CustomId { get; } = customId;
     protected override string GetLabel(Player player) => label;
     protected override string? GetHint(Player player) => hint;
-    protected override void OnValueChanged(Player player) => onChanged?.Invoke(player, GetSetting(player));
+    protected override void OnValueChanged(Player player, string text) => onChanged?.Invoke(player, text);
     public override bool IsVisibleToPlayer(Player player) => isVisible == null || isVisible(player);
     protected override string GetPlaceholder(Player player) => placeHolder;
     protected override int GetMaxLength(Player player) => maxLength;

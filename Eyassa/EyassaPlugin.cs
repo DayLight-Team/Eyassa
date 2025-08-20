@@ -1,6 +1,7 @@
 ﻿using System;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Core.UserSettings;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Loader;
 using Eyassa.Interfaces;
@@ -9,6 +10,7 @@ using Eyassa.Models;
 using HarmonyLib;
 using MEC;
 using UnityEngine;
+using UserSettings.ServerSpecific;
 using Player = Exiled.Events.Handlers.Player;
 
 namespace Eyassa;
@@ -16,7 +18,7 @@ namespace Eyassa;
 public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
 {
     public override string Name { get; } = "Eyassa";
-    public override Version Version { get; } = new(1, 0, 0);
+    public override Version Version { get; } = new(3, 0, 0);
     public override string Author { get; } = "Tili :3";
 
     public override PluginPriority Priority { get; } = PluginPriority.First;
@@ -33,8 +35,5 @@ public class EyassaPlugin : Plugin<Configs, EyassaTranslations>
         Harmony.PatchAll();
         base.OnEnabled();
     }
-    
-
-
 }
 

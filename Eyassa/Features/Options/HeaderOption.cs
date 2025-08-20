@@ -12,6 +12,10 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
 
     public override bool IsIdCached => false;
     public sealed override string CustomId { get; } = "";
+    internal override void OnRegisteredInternal()
+    {
+        OriginalDefinition = new HeaderSetting(Id, "Default", "Default", false);
+    }
     public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
@@ -21,16 +25,8 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
 
 
     }
-    public sealed override SettingBase BuildBase(Player? player)
+    public sealed override SettingBase BuildBase(Player player)
     {
-        if (player == null)
-            return new HeaderSetting(Id, "Default" ,"Default", false);
         return new HeaderSetting(Id, GetLabel(player), GetHint(player), GetApplyPadding(player));
-    }
-    protected sealed override void OnValueChanged(Player player)
-    {
-        if(!IsRegistered)
-            return;
-        throw new InvalidOperationException("This method should never be called.");
     }
 }

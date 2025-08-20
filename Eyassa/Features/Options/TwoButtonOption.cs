@@ -11,6 +11,10 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
     protected abstract string GetSecondButtonText(Player player);
     protected abstract bool GetIsSecondsButtonDefault(Player player);
 
+    internal override void OnRegisteredInternal()
+    {
+        OriginalDefinition = new TwoButtonsSetting(Id, "Default", "Default","Default",false, "Default", 255, onChanged: OnChanged);
+    }
     public sealed override void UpdateOption(Player? player, bool overrideValue = true)
     {
         if(player==null)
@@ -18,19 +22,14 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
         var setting = GetSetting(player);
         setting?.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue, filter: player1 => player1 == player);
         setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
-
-
     }
 
-    public sealed override SettingBase BuildBase(Player? player)
+    public sealed override SettingBase BuildBase(Player player)
     {
-        if(player == null)
-            return new TwoButtonsSetting(Id, "Default", "Default","Default",false, "Default", null, OnChanged);
-        
-        return new TwoButtonsSetting(Id, GetLabel(player), GetFirstButtonText(player),GetSecondButtonText(player), GetIsSecondsButtonDefault(player) , GetHint(player), null,
-            OnChanged);
+        return new TwoButtonsSetting(Id, GetLabel(player), GetFirstButtonText(player),GetSecondButtonText(player), GetIsSecondsButtonDefault(player) , GetHint(player),
+            255, onChanged: OnChanged);
     }
-    
+    protected abstract void OnPressed(Player player, bool isFirst);
     private void OnChanged(Player? player, SettingBase setting)
     {
         if(!IsRegistered)
@@ -42,7 +41,7 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
         LastReceivedValues[player] = setting;
         try
         {
-            OnValueChanged(player);
+            OnPressed(player, setting.Cast<TwoButtonsSetting>().IsFirst);
         }
         catch (Exception e)
         {

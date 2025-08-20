@@ -16,6 +16,6 @@ public class GenericButtonOption(
     protected override string? GetHint(Player player) => hint;
     protected override string GetButtonText(Player player) => buttonText;
     protected override float GetHoldTime(Player player) => holdTime;
-    protected override void OnValueChanged(Player player) => onPressed?.Invoke(player, GetSetting(player));
+    protected override void OnPressed(Player player) => onPressed?.Invoke(player, GetSetting(player));
     public override bool IsVisibleToPlayer(Player player) => isVisible == null || isVisible(player);
 }

@@ -14,16 +14,18 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
 {
     public int Id { get; private set; } = -1;
 
+    protected T? OriginalDefinition { get; set; }
     public virtual bool SendOnJoin { get; } = true;
 
     public abstract string CustomId { get; }
     protected abstract string GetLabel(Player player);
     protected virtual string? GetHint(Player player) => null;
-    protected abstract void OnValueChanged(Player player);
     internal Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
     public virtual bool IsVisibleToPlayer(Player player) => true;
     public virtual bool IsIdCached => true;
     private List<Player> AvailableForPlayers { get; } = [];
+    internal abstract void OnRegisteredInternal();
+    
     bool IOption.CheckForUpdate(Player? player)
     {
         try
@@ -73,7 +75,8 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
             return;
         }
         Id = IsIdCached ? IdManager.Instance.GetId(CustomId) : IdManager.GetNextId();
-        SettingBase.Register(new List<SettingBase>() { BuildBase(null) }, _=> false);
+        OnRegisteredInternal();
+        SettingBase.Register(new List<SettingBase?>() { OriginalDefinition }, _=> false);
         IsRegistered = true;
     }
     protected virtual void OnSentSetting(Player player)
@@ -86,20 +89,20 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         UpdateOption(player);
     }
     protected bool IsRegistered;
-    protected T GetSetting(Player? player)
+    protected T GetSetting(Player player)
     {
         try
         {
-            var value = player != null && LastReceivedValues.TryGetValue(player, out var receivedValue) ? receivedValue.Cast<T>() : (T)BuildBase(player);
+            var value = LastReceivedValues.TryGetValue(player, out var receivedValue) ? receivedValue.Cast<T>() : (T)BuildBase(player);
             return value;
         }
         catch (Exception e)
         {
             Log.Error(e);
-            return (T)BuildBase(null);
+            return OriginalDefinition ?? throw new Exception("OriginalDefinition is null");
         }
     }
     public abstract void UpdateOption(Player? player, bool overrideValue = true);
     
-    public abstract SettingBase BuildBase(Player? player);
+    public abstract SettingBase BuildBase(Player player);
 }

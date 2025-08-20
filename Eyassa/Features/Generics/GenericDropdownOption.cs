@@ -12,7 +12,7 @@ public class GenericDropdownOption(
     string? hint = null,
     int defaultIndex = 0,
     SSDropdownSetting.DropdownEntryType dropdownType = SSDropdownSetting.DropdownEntryType.Regular,
-    Action<Player, DropdownSetting>? onChanged = null,
+    Action<Player, string>? onChanged = null,
     Predicate<Player>? isVisible = null) : DropdownOption
 {
     public override string CustomId { get; } = customId;
@@ -20,7 +20,7 @@ public class GenericDropdownOption(
     protected override string? GetHint(Player player) => hint;
     protected override int GetDefaultOptionIndex(Player player) => defaultIndex;
     protected override SSDropdownSetting.DropdownEntryType GetEntryType(Player player) => dropdownType;
-    protected override void OnValueChanged(Player player) => onChanged?.Invoke(player, GetSetting(player));
+    protected override void OnValueChanged(Player player, string value) => onChanged?.Invoke(player, value);
     public override bool IsVisibleToPlayer(Player player) => isVisible == null || isVisible(player);
     protected override List<string> GetOptions(Player player) => options;
 }

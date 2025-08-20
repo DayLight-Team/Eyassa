@@ -14,7 +14,7 @@ public class GenericSliderOption(
     bool isInteger = false,
     string displayFormat = "{0}",
     string stringFormat = "0.##",
-    Action<Player, SliderSetting>? onChanged = null,
+    Action<Player, float>? onChanged = null,
     Predicate<Player>? isVisible = null) : SliderOption
 {
     public override string CustomId { get; } = customId;
@@ -27,7 +27,7 @@ public class GenericSliderOption(
     protected override string GetStringFormat(Player player) => stringFormat;
     
 
-    protected override void OnValueChanged(Player player) => onChanged?.Invoke(player, GetSetting(player));
+    protected override void OnValueChanged(Player player, float value) => onChanged?.Invoke(player, value);
     public override bool IsVisibleToPlayer(Player player) => isVisible == null || isVisible(player);
     protected override float GetMin(Player player) => min;
     protected override float GetMax(Player player) => max;

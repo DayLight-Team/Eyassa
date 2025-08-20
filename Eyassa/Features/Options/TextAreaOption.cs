@@ -17,26 +17,14 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
-
-
+        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
     }
-    public sealed override SettingBase BuildBase(Player? player)
+    internal override void OnRegisteredInternal()
     {
-        if (player == null)
-            return new TextInputSetting(Id, "Default", onChanged: OnChanged);
+        OriginalDefinition = new TextInputSetting(Id, "Default");
+    }
+    public sealed override SettingBase BuildBase(Player player)
+    {
         return new TextInputSetting(Id, GetLabel(player), GetFoldoutMode(player), GetAlignment(player), GetHint(player));
-    }
-
-    protected sealed override void OnValueChanged(Player player)
-    {
-        if(!IsRegistered)
-            return;
-        throw new InvalidOperationException("This method should never be called.");
-    }
-
-    private void OnChanged(Player? player, SettingBase setting)
-    {
-        throw new InvalidOperationException("This method should never be called.");
     }
 }

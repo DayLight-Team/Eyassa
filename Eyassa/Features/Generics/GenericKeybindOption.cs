@@ -13,7 +13,7 @@ public class GenericKeybindOption(string customId, string label, KeyCode suggest
 
     protected override bool GetPreventInteractionOnGUI(Player player) => preventInteraction;
 
-    protected override void OnValueChanged(Player player) => onPressed?.Invoke(player, GetSetting(player));
+    protected override void OnPressed(Player player) => onPressed?.Invoke(player, GetSetting(player));
     protected override KeyCode GetSuggestedKey(Player player) => suggestedKey;
     public override bool IsVisibleToPlayer(Player player) => isVisible == null || isVisible(player);
 }
