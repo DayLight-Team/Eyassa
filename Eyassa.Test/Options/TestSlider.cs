@@ -12,14 +12,13 @@ public class TestSlider : SliderOption
     protected override float GetMin(Player player) => 0;
     protected override float GetMax(Player player) => 50;
     protected override float GetDefaultValue(Player player) => 30;
+    protected override void OnValueChanged(Player player, float value)
+    {
+        Log.Info(value);
+    }
 
     public override bool IsVisibleToPlayer(Player player)
     {
         return player.Role.Type == RoleTypeId.Tutorial;
-    }
-
-    protected override void OnValueChanged(Player? player)
-    {
-        var setting = GetSetting(player);
     }
 }

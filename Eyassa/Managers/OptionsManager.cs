@@ -93,7 +93,7 @@ public class OptionsManager
     {
         yield return Timing.WaitForSeconds(1f);
         SendAll(player);
-        while (player != null)
+        while (player.IsConnected)
         {
             yield return Timing.WaitForSeconds(0.5f);
             try

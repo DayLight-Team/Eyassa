@@ -10,15 +10,13 @@ public class TestTwoButton : TwoButtonOption
 
     protected override string? GetHint(Player player) => "idfk";
 
-    protected override void OnValueChanged(Player? player)
-    {
-        var twoButtonsSetting = GetSetting(player);
-        Log.Info(twoButtonsSetting.IsFirst + " " + twoButtonsSetting.IsSecond);
-    }
-
     protected override string GetFirstButtonText(Player player) => player.Role.Type.ToString();
 
     protected override string GetSecondButtonText(Player player) => player.Position.ToString();
 
     protected override bool GetIsSecondsButtonDefault(Player player) => true;
+    protected override void OnPressed(Player player, bool isFirst)
+    {
+        Log.Info(isFirst);
+    }
 }

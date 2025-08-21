@@ -10,13 +10,13 @@ public class GenericTwoButtonOption(string customId,
     string secondButtonText,
     string? hint,
     bool isSecondButtonDefault = false,
-    Action<Player, TwoButtonsSetting>? onChanged = null,  
+    Action<Player, bool>? onChanged = null,  
     Predicate<Player>? isVisible = null) : TwoButtonOption
 {
     public override string CustomId { get; } = customId;
     protected override string GetLabel(Player player) => label;
     protected override string? GetHint(Player player) => hint;
-    protected override void OnValueChanged(Player player) => onChanged?.Invoke(player, GetSetting(player));
+    protected override void OnPressed(Player player, bool isFirst) => onChanged?.Invoke(player, isFirst);
     public override bool IsVisibleToPlayer(Player player) => isVisible == null || isVisible(player);
     protected override string GetFirstButtonText(Player player) => firstButtonText;
     protected override string GetSecondButtonText(Player player) => secondButtonText;

@@ -10,11 +10,7 @@ public class TestDropdown : DropdownOption
     protected override string GetLabel(Player player) => player.Nickname + "'s rizz level";
 
     protected override string? GetHint(Player player) => "idfk";
-    protected override void OnValueChanged(Player player)
-    {
-        var setting = GetSetting(player);
-        Log.Info(setting.SelectedOption);
-    }
+
 
     protected override List<string> GetOptions(Player player)
     {
@@ -22,5 +18,10 @@ public class TestDropdown : DropdownOption
         {
             "1", "2", "3"
         };
+    }
+
+    protected override void OnValueChanged(Player player, string selectedOption)
+    {
+        Log.Info(selectedOption);
     }
 }

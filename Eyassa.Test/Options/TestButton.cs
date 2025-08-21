@@ -9,9 +9,10 @@ public class TestButton : ButtonOption
     protected override string GetButtonText(Player player) => $"Heal {player.MaxHealth - player.Health} HP";
     protected override string? GetHint(Player player) => "Heals you to full health";
     protected override float GetHoldTime(Player player) => (player.MaxHealth - player.Health) / 10;
-
-    protected override void OnValueChanged(Player? player)
+    protected override void OnPressed(Player player)
     {
         player?.Heal(player.MaxHealth - player.Health);
     }
+
+
 }

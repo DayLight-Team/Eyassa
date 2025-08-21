@@ -12,7 +12,7 @@ public class GenericTextInputOption(
     string placeHolder = "",
     TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard,
     int maxLength = 64,
-    Action<Player, UserTextInputSetting>? onChanged = null,
+    Action<Player, string>? onChanged = null,
     Predicate<Player>? isVisible = null) : TextInputOption
 {
     public override string CustomId { get; } = customId;
