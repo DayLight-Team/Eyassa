@@ -53,11 +53,12 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
         var newSetting = BuildBase(player).Cast<DropdownSetting>();
         newSetting.SelectedIndex = dropdownSetting.SelectedIndex;
         newSetting.Options = GetOptions(player);
-        
-        int index = Mathf.Clamp(newSetting.Base.SyncSelectionIndexRaw, 0, newSetting.Base.Options.Length - 1);
-        
-        if(LastSentValues[player] == null)
+        if(!LastSentValues.TryGetValue(player, out var last))
             return;
+        
+        var index = Mathf.Clamp(dropdownSetting.SelectedIndex, 0, last.Count - 1);
+        
+ 
         
         try
         {
