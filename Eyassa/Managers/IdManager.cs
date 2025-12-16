@@ -7,7 +7,7 @@ namespace Eyassa.Managers;
 
 public class IdManager
 {
-    internal static IdManager Instance { get; } = new IdManager();
+    public static IdManager Instance { get; } = new IdManager();
 
     internal readonly static HashSet<int> UsedNumbers = new();
     private static string FolderPath => Path.Combine(Paths.Configs, "EyassaCache");
@@ -18,7 +18,7 @@ public class IdManager
     {
         Load();
     }
-    private int GetSettingId(string customId)
+    public int GetSettingId(string customId)
     {
         if (_idMap == null)
         {
