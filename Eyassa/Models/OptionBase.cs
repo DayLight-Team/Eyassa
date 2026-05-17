@@ -21,9 +21,10 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     protected abstract string GetLabel(Player player);
     protected virtual string? GetHint(Player player) => null;
     internal Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
+    private Dictionary<Player, T> BuiltSettings { get; } = new();
     public virtual bool IsVisibleToPlayer(Player player) => true;
     public virtual bool IsIdCached => true;
-    private List<Player> AvailableForPlayers { get; } = [];
+    private HashSet<Player> AvailableForPlayers { get; } = [];
     internal abstract void OnRegisteredInternal();
     
     bool IOption.CheckForUpdate(Player? player)
@@ -88,12 +89,37 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         OnSentSetting(player);
         UpdateOption(player);
     }
+
+    void IOption.ForgetPlayer(Player player)
+    {
+        AvailableForPlayers.Remove(player);
+        LastReceivedValues.Remove(player);
+        BuiltSettings.Remove(player);
+        OnForgetPlayer(player);
+    }
+
+    void IOption.RememberBuiltSetting(Player player, SettingBase setting)
+    {
+        BuiltSettings[player] = setting.Cast<T>();
+    }
+
+    protected virtual void OnForgetPlayer(Player player)
+    {
+    }
+
     protected bool IsRegistered;
     protected T GetSetting(Player player)
     {
         try
         {
-            var value = LastReceivedValues.TryGetValue(player, out var receivedValue) ? receivedValue.Cast<T>() : (T)BuildBase(player);
+            if (LastReceivedValues.TryGetValue(player, out var receivedValue))
+                return receivedValue.Cast<T>();
+
+            if (BuiltSettings.TryGetValue(player, out var builtSetting))
+                return builtSetting;
+
+            var value = (T)BuildBase(player);
+            BuiltSettings[player] = value;
             return value;
         }
         catch (Exception e)

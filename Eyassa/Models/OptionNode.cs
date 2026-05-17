@@ -13,7 +13,7 @@ public abstract class OptionNode
     public abstract List<IOption> Options { get; }
     public virtual int Priority { get; set; } = 0;
     public virtual bool IsVisibleToPlayer(Player? player) => true;
-    private List<Player> AvailableForPlayers { get; } = new();
+    private HashSet<Player> AvailableForPlayers { get; } = new();
 
     public void Register()
     {
@@ -34,7 +34,10 @@ public abstract class OptionNode
         }
     }
 
-    public List<IOption> GetVisibleOptions(Player? player) => Options.Where(x => x.IsCurrentlyVisible(player)).ToList();
+    public List<IOption> GetVisibleOptions(Player? player)
+    {
+        return player == null ? [] : Options.Where(x => x.IsCurrentlyVisible(player)).ToList();
+    }
     public void UpdateNode(Player? player)
     {
         if(player == null)
@@ -50,6 +53,13 @@ public abstract class OptionNode
                 Log.Error(e);
             }
         }
+    }
+
+    internal void ForgetPlayer(Player player)
+    {
+        AvailableForPlayers.Remove(player);
+        foreach (var option in Options)
+            option.ForgetPlayer(player);
     }
 
 
@@ -87,8 +97,11 @@ public abstract class OptionNode
         var optionUpdate = false;
 
         
-        foreach (var unused in Options.Where(option => option.CheckForUpdate(player)))
+        foreach (var option in Options)
         {
+            if (!option.CheckForUpdate(player))
+                continue;
+
             optionUpdate = true;
             update = true;
         }

@@ -13,61 +13,80 @@ namespace Eyassa.Managers;
 public class OptionsManager
 {
     internal static List<OptionNode> Nodes { get; } = new();
-    internal static Dictionary<Player, List<int>> SentIds { get; } = new();
+    internal static Dictionary<Player, HashSet<int>> SentIds { get; } = new();
     private static void SendToPlayer(Player? player)
     {
         if(player == null)
             return;
-        if(!SentIds.ContainsKey(player))
-            SentIds[player] = [];
+        if(!SentIds.TryGetValue(player, out var sentIds))
+        {
+            sentIds = [];
+            SentIds[player] = sentIds;
+        }
         
         List<IOption> settings = [];
-        foreach (var node in Nodes.Where(x=>x.IsVisibleToPlayer(player)).OrderByDescending(x=>x.Priority))
+        foreach (var node in Nodes.OrderByDescending(x=>x.Priority))
         {
-            var first = node.Options.Where(x => !SentIds[player].Contains(x.Id));
-            foreach (var option in first)
+            if (!node.IsVisibleToPlayer(player))
+                continue;
+
+            foreach (var option in node.Options)
             {
-                SentIds[player].Add(option.Id);
-                try
+                if (sentIds.Add(option.Id))
                 {
-                    option.OnFirstUpdate(player);
+                    try
+                    {
+                        option.OnFirstUpdate(player);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
                 }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
+
+                if (option.IsVisibleToPlayer(player))
+                    settings.Add(option);
             }
-            settings.AddRange(node.Options.Where(x => x.IsVisibleToPlayer(player)));
         }
         
         Log.Debug($"Sending {settings.Count} settings to {player.Nickname}");
-        SettingBase.SendToPlayer(player, settings.Select(x => GetSelector(x, player)));
-        settings.ForEach(x=>x.OnSentSettingInternal(player));
+        var selectors = new List<SettingBase>(settings.Count);
+        foreach (var setting in settings)
+            selectors.Add(GetSelector(setting, player));
+        SettingBase.SendToPlayer(player, selectors);
+        foreach (var setting in settings)
+            setting.OnSentSettingInternal(player);
     }
 
     private static void SendAll(Player? player)
     {
         if(player == null)
             return;
-        if(!SentIds.ContainsKey(player))
-            SentIds[player] = [];
+        if(!SentIds.TryGetValue(player, out var sentIds))
+        {
+            sentIds = [];
+            SentIds[player] = sentIds;
+        }
         List<SettingBase> settings = [];
         foreach (var node in Nodes)
         {
             foreach (var option in node.Options)
             {
-                SentIds[player].Add(option.Id);
-                try
+                if (sentIds.Add(option.Id))
                 {
-                    option.OnFirstUpdate(player);
+                    try
+                    {
+                        option.OnFirstUpdate(player);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
                 }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
+
+                if (option.SendOnJoin)
+                    settings.Add(GetSelector(option, player));
             }
-            var options = node.Options.Where(x => x.SendOnJoin);
-            settings.AddRange(options.Select(x=> GetSelector(x, player)));
         }
         Log.Debug($"OnJoined: Sending {settings.Count} settings to {player.Nickname}");
         SettingBase.SendToPlayer(player, settings);
@@ -76,7 +95,9 @@ public class OptionsManager
     {
         try
         {
-            return arg.BuildBase(player);
+            var setting = arg.BuildBase(player);
+            arg.RememberBuiltSetting(player, setting);
+            return setting;
         }
         catch (Exception e)
         {
@@ -89,22 +110,34 @@ public class OptionsManager
     {
         Timing.RunCoroutine(SettingUpdater(ev.Player));
     }
+
+    private static float SettingUpdateInterval => Math.Max(0.1f, EyassaPlugin.Instance?.Config.SettingUpdateInterval ?? 0.5f);
+    private static float VisibilityCheckInterval => Math.Max(SettingUpdateInterval, EyassaPlugin.Instance?.Config.VisibilityCheckInterval ?? 2f);
+
     private static IEnumerator<float> SettingUpdater(Exiled.API.Features.Player player)
     {
         yield return Timing.WaitForSeconds(1f);
         SendAll(player);
+        var visibilityCheckDelay = 0f;
         while (player.IsConnected)
         {
-            yield return Timing.WaitForSeconds(0.5f);
+            var updateInterval = SettingUpdateInterval;
+            yield return Timing.WaitForSeconds(updateInterval);
             try
             {
                 var sendSettings = false;
+                visibilityCheckDelay -= updateInterval;
+                var checkVisibility = visibilityCheckDelay <= 0f;
+                if (checkVisibility)
+                    visibilityCheckDelay = VisibilityCheckInterval;
 
                 foreach (var node in Nodes)
                 {
-                    if (node.CheckSendRequired(player))
+                    if (checkVisibility && node.CheckSendRequired(player))
                         sendSettings = true;
-                    node.Options.ForEach(x=>x.UpdateOption(player));
+
+                    foreach (var option in node.Options)
+                        option.UpdateOption(player);
                 }
                 if(sendSettings)
                     SendToPlayer(player);
@@ -115,6 +148,10 @@ public class OptionsManager
                 Log.Error(e);
             }
         }
+
+        SentIds.Remove(player);
+        foreach (var node in Nodes)
+            node.ForgetPlayer(player);
 
     }
 

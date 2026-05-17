@@ -40,6 +40,11 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
 
     protected abstract void OnValueChanged(Player player, string selectedOption);
     private Dictionary<Player, List<string>> LastSentValues { get; } = new();
+    protected override void OnForgetPlayer(Player player)
+    {
+        LastSentValues.Remove(player);
+    }
+
     private void OnChanged(Player? player, SettingBase setting)
     {
 
@@ -49,20 +54,17 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
             return;
         if(Id != setting.Id)
             return;
-        var dropdownSetting = setting.Cast<DropdownSetting>();
-        var newSetting = BuildBase(player).Cast<DropdownSetting>();
-        newSetting.SelectedIndex = dropdownSetting.SelectedIndex;
-        newSetting.Options = GetOptions(player);
         if(!LastSentValues.TryGetValue(player, out var last))
             return;
         
+        var dropdownSetting = setting.Cast<DropdownSetting>();
         var index = Mathf.Clamp(dropdownSetting.SelectedIndex, 0, last.Count - 1);
         
  
         
         try
         {
-            OnValueChanged(player, LastSentValues[player][index]);
+            OnValueChanged(player, last[index]);
         }
         catch (Exception e)
         {
