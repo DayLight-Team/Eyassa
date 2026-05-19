@@ -7,6 +7,7 @@ namespace Eyassa.Features.Options;
 
 public abstract class HeaderOption : OptionBase<HeaderSetting>
 {
+    private Dictionary<Player, (string Label, string? Hint, bool ApplyPadding)> LastSentSettings { get; } = new();
     
     public virtual bool GetApplyPadding(Player player) => false;
 
@@ -20,8 +21,21 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
     {
         if(player==null)
             return;
-        var setting = GetSetting(player);
-        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
+
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        var applyPadding = GetApplyPadding(player);
+
+        if (LastSentSettings.TryGetValue(player, out var previous) &&
+            previous.Label == label &&
+            previous.Hint == hint &&
+            previous.ApplyPadding == applyPadding)
+            return;
+
+        var setting = new HeaderSetting(Id, label, hint, applyPadding);
+        SettingBase.Unregister(player, [setting]);
+        SettingBase.Register(player, [setting]);
+        LastSentSettings[player] = (label, hint, applyPadding);
 
 
     }
@@ -29,7 +43,7 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
     {
         var label = GetLabel(player);
         var hint = GetHint(player);
-        CacheLabelAndHint(player, label, hint);
-        return new HeaderSetting(Id, label, hint, GetApplyPadding(player));
+        var applyPadding = GetApplyPadding(player);
+        return new HeaderSetting(Id, label, hint, applyPadding);
     }
 }

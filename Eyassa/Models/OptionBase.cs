@@ -69,11 +69,11 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
 
         var label = GetLabel(player);
         var hint = GetHint(player);
+
         if (LastSentLabelHints.TryGetValue(player, out var previous) &&
             previous.Label == label &&
             previous.Hint == hint)
             return false;
-
         setting.UpdateLabelAndHint(label, hint, overrideValue, filter: player1 => player1 == player);
         LastSentLabelHints[player] = (label, hint);
         return true;
@@ -106,10 +106,13 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     {
         
     }
-    void IOption.OnSentSettingInternal(Player player)
+    void IOption.Send(Player player)
     {
         OnSentSetting(player);
-        UpdateOption(player);
+        Timing.CallDelayed(0.5f, () =>
+        {
+            UpdateOption(player);
+        });
     }
     protected bool IsRegistered;
     protected T GetSetting(Player player)

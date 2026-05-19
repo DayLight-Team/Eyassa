@@ -22,11 +22,11 @@ public abstract class OptionNode
             Log.Error("Trying to register an node before Eyassa is loaded");
             return;
         }
-        UpdateOptions();
+        RegisterOptions();
         OptionsManager.Nodes.Add(this);
     }
 
-    public void UpdateOptions()
+    public void RegisterOptions()
     {
         foreach (var option in Options)
         {
@@ -34,7 +34,22 @@ public abstract class OptionNode
         }
     }
 
-    public List<IOption> GetVisibleOptions(Player player) => Options.Where(x => x.IsCurrentlyVisible(player)).ToList();
+    public bool IsCurrentlyVisible(Player player)
+    {
+        return AvailableForPlayers.Contains(player);
+    }
+
+    public List<IOption> GetVisibleOptions(Player player)
+    {
+        List<IOption> options = [];
+        foreach (var option in Options)
+        {
+            if (option.IsCurrentlyVisible(player))
+                options.Add(option);
+        }
+
+        return options;
+    }
     public void UpdateNode(Player? player)
     {
         if(player == null)
@@ -85,10 +100,11 @@ public abstract class OptionNode
         }
         
         var optionUpdate = false;
-
-        
-        foreach (var unused in Options.Where(option => option.CheckForUpdate(player)))
+        foreach (var option in Options)
         {
+            if (!option.CheckForUpdate(player))
+                continue;
+
             optionUpdate = true;
             update = true;
         }

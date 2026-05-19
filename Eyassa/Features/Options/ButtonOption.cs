@@ -28,6 +28,7 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
         var setting = GetSetting(player);
         var text = GetButtonText(player);
         var holdTime = GetHoldTime(player);
+
         if (!LastSentSettings.TryGetValue(player, out var previous) ||
             previous.Text != text ||
             previous.HoldTime != holdTime)
@@ -35,8 +36,8 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
             setting?.Cast<ButtonSetting>().UpdateSetting(text, holdTime, overrideValue, filter: player1 => player1 == player);
             LastSentSettings[player] = (text, holdTime);
         }
-
         UpdateLabelAndHintIfChanged(setting, player, overrideValue);
+
 
     }
 

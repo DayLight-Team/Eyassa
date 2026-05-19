@@ -6,6 +6,7 @@ using Eyassa.Interfaces;
 using Eyassa.Models;
 using MEC;
 using UnityEngine;
+using UserSettings.ServerSpecific;
 using Random = UnityEngine.Random;
 
 namespace Eyassa.Managers;
@@ -22,10 +23,22 @@ public class OptionsManager
             SentIds[player] = [];
         
         List<IOption> settings = [];
-        foreach (var node in Nodes.Where(x=>x.IsVisibleToPlayer(player)).OrderByDescending(x=>x.Priority))
+        List<OptionNode> visibleNodes = [];
+        foreach (var node in Nodes)
         {
-            foreach (var option in node.Options.Where(x => SentIds[player].Add(x.Id)))
+            if (node.IsCurrentlyVisible(player))
+                visibleNodes.Add(node);
+        }
+
+        visibleNodes.Sort((left, right) => right.Priority.CompareTo(left.Priority));
+
+        foreach (var node in visibleNodes)
+        {
+            foreach (var option in node.Options)
             {
+                if (!SentIds[player].Add(option.Id))
+                    continue;
+
                 try
                 {
                     option.OnFirstUpdate(player);
@@ -35,12 +48,26 @@ public class OptionsManager
                     Log.Error(e);
                 }
             }
-            settings.AddRange(node.Options.Where(x => x.IsVisibleToPlayer(player)));
+
+            foreach (var option in node.Options)
+            {
+                if (option.IsCurrentlyVisible(player))
+                    settings.Add(option);
+            }
         }
         
         Log.Debug($"Sending {settings.Count} settings to {player.Nickname}");
-        SettingBase.SendToPlayer(player, settings.Select(x => GetSelector(x, player)));
-        settings.ForEach(x=>x.OnSentSettingInternal(player));
+        List<SettingBase> settingBases = [];
+        foreach (var setting in settings)
+        {
+            settingBases.Add(GetSelector(setting, player));
+        }
+
+        SettingBase.SendToPlayer(player, settingBases);
+        foreach (var setting in settings)
+        {
+            setting.Send(player);
+        }
     }
 
     private static void SendAll(Player? player)
@@ -89,20 +116,34 @@ public class OptionsManager
     }
     private static IEnumerator<float> SettingUpdater(Exiled.API.Features.Player player)
     {
-        yield return Timing.WaitForSeconds(1f);
+        //Scatter the update between random Frames
+        yield return Timing.WaitForSeconds(Random.Range(1f, 1.5f));
         SendAll(player);
         while (player.IsConnected)
         {
             yield return Timing.WaitForSeconds(0.5f);
             try
             {
+
+                if(!ServerSpecificSettingsSync.IsTabOpenForUser(player.ReferenceHub))
+                    continue;
+                
+                Log.Debug("Sending settings");
                 var sendSettings = false;
 
                 foreach (var node in Nodes)
                 {
                     if (node.CheckSendRequired(player))
                         sendSettings = true;
-                    node.Options.ForEach(x=>x.UpdateOption(player));
+
+                    if (!node.IsCurrentlyVisible(player))
+                        continue;
+
+                    foreach (var option in node.Options)
+                    {
+                        if (option.IsCurrentlyVisible(player))
+                            option.UpdateOption(player);
+                    }
                 }
                 if(sendSettings)
                     SendToPlayer(player);
