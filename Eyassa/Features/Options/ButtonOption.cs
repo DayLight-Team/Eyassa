@@ -7,6 +7,7 @@ namespace Eyassa.Features.Options;
 
 public abstract class ButtonOption : OptionBase<ButtonSetting>
 {
+    private Dictionary<Player, (string Text, float HoldTime)> LastSentSettings { get; } = new();
 
     protected abstract string GetButtonText(Player player);
 
@@ -25,16 +26,29 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.Cast<ButtonSetting>().UpdateSetting(GetButtonText(player), GetHoldTime(player), overrideValue, filter: player1 => player1 == player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        var text = GetButtonText(player);
+        var holdTime = GetHoldTime(player);
+        if (!LastSentSettings.TryGetValue(player, out var previous) ||
+            previous.Text != text ||
+            previous.HoldTime != holdTime)
+        {
+            setting?.Cast<ButtonSetting>().UpdateSetting(text, holdTime, overrideValue, filter: player1 => player1 == player);
+            LastSentSettings[player] = (text, holdTime);
+        }
 
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
 
     }
 
     public sealed override SettingBase BuildBase(Player player)
     {
-        return new ButtonSetting(Id, GetLabel(player), GetButtonText(player), GetHoldTime(player), GetHint(player), null,
-            OnChanged);
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        var text = GetButtonText(player);
+        var holdTime = GetHoldTime(player);
+        CacheLabelAndHint(player, label, hint);
+        LastSentSettings[player] = (text, holdTime);
+        return new ButtonSetting(Id, label, text, holdTime, hint, null, OnChanged);
     }
     protected abstract void OnPressed(Player player);
     private void OnChanged(Player? player, SettingBase setting)

@@ -13,7 +13,7 @@ public abstract class OptionNode
     public abstract List<IOption> Options { get; }
     public virtual int Priority { get; set; } = 0;
     public virtual bool IsVisibleToPlayer(Player? player) => true;
-    private List<Player> AvailableForPlayers { get; } = new();
+    private HashSet<Player> AvailableForPlayers { get; } = new();
 
     public void Register()
     {
@@ -34,7 +34,7 @@ public abstract class OptionNode
         }
     }
 
-    public List<IOption> GetVisibleOptions(Player? player) => Options.Where(x => x.IsCurrentlyVisible(player)).ToList();
+    public List<IOption> GetVisibleOptions(Player player) => Options.Where(x => x.IsCurrentlyVisible(player)).ToList();
     public void UpdateNode(Player? player)
     {
         if(player == null)

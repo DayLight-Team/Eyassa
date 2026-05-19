@@ -6,6 +6,7 @@ namespace Eyassa.Features.Options;
 
 public abstract class SliderOption : OptionBase<SliderSetting>
 {
+    private Dictionary<Player, (float Min, float Max, bool IsInteger, string StringFormat, string DisplayFormat)> LastSentSettings { get; } = new();
 
     protected abstract float GetMin(Player player);
     protected abstract float GetMax(Player player);
@@ -23,14 +24,37 @@ public abstract class SliderOption : OptionBase<SliderSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.UpdateSetting(GetMin(player), GetMax(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player), overrideValue,filter: player1 => player1 == player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        var min = GetMin(player);
+        var max = GetMax(player);
+        var isInteger = GetIsInteger(player);
+        var stringFormat = GetStringFormat(player);
+        var displayFormat = GetDisplayFormat(player);
+        if (!LastSentSettings.TryGetValue(player, out var previous) ||
+            previous.Min != min ||
+            previous.Max != max ||
+            previous.IsInteger != isInteger ||
+            previous.StringFormat != stringFormat ||
+            previous.DisplayFormat != displayFormat)
+        {
+            setting?.UpdateSetting(min, max, isInteger, stringFormat, displayFormat, overrideValue,filter: player1 => player1 == player);
+            LastSentSettings[player] = (min, max, isInteger, stringFormat, displayFormat);
+        }
 
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
 
     }
     public sealed override SettingBase BuildBase(Player player)
     {
-        return new SliderSetting(Id, GetLabel(player), GetMin(player), GetMax(player), GetDefaultValue(player), GetIsInteger(player), GetStringFormat(player), GetDisplayFormat(player));
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        var min = GetMin(player);
+        var max = GetMax(player);
+        var isInteger = GetIsInteger(player);
+        var stringFormat = GetStringFormat(player);
+        var displayFormat = GetDisplayFormat(player);
+        CacheLabelAndHint(player, label, hint);
+        LastSentSettings[player] = (min, max, isInteger, stringFormat, displayFormat);
+        return new SliderSetting(Id, label, min, max, GetDefaultValue(player), isInteger, stringFormat, displayFormat);
     }
     protected abstract void OnValueChanged(Player player, float value);
     private void OnChanged(Player? player, SettingBase setting)

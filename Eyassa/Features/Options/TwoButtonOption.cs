@@ -7,6 +7,8 @@ namespace Eyassa.Features.Options;
 
 public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
 {
+    private Dictionary<Player, (string FirstText, string SecondText)> LastSentSettings { get; } = new();
+
     protected abstract string GetFirstButtonText(Player player);
     protected abstract string GetSecondButtonText(Player player);
     protected abstract bool GetIsSecondsButtonDefault(Player player);
@@ -20,14 +22,28 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.Cast<TwoButtonsSetting>().UpdateSetting(GetFirstButtonText(player),GetSecondButtonText(player), overrideValue, filter: player1 => player1 == player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        var firstText = GetFirstButtonText(player);
+        var secondText = GetSecondButtonText(player);
+        if (!LastSentSettings.TryGetValue(player, out var previous) ||
+            previous.FirstText != firstText ||
+            previous.SecondText != secondText)
+        {
+            setting?.Cast<TwoButtonsSetting>().UpdateSetting(firstText, secondText, overrideValue, filter: player1 => player1 == player);
+            LastSentSettings[player] = (firstText, secondText);
+        }
+
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
     }
 
     public sealed override SettingBase BuildBase(Player player)
     {
-        return new TwoButtonsSetting(Id, GetLabel(player), GetFirstButtonText(player),GetSecondButtonText(player), GetIsSecondsButtonDefault(player) , GetHint(player),
-            255, onChanged: OnChanged);
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        var firstText = GetFirstButtonText(player);
+        var secondText = GetSecondButtonText(player);
+        CacheLabelAndHint(player, label, hint);
+        LastSentSettings[player] = (firstText, secondText);
+        return new TwoButtonsSetting(Id, label, firstText, secondText, GetIsSecondsButtonDefault(player) , hint, 255, onChanged: OnChanged);
     }
     protected abstract void OnPressed(Player player, bool isFirst);
     private void OnChanged(Player? player, SettingBase setting)

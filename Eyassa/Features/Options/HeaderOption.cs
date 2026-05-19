@@ -21,12 +21,15 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
 
 
     }
     public sealed override SettingBase BuildBase(Player player)
     {
-        return new HeaderSetting(Id, GetLabel(player), GetHint(player), GetApplyPadding(player));
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        CacheLabelAndHint(player, label, hint);
+        return new HeaderSetting(Id, label, hint, GetApplyPadding(player));
     }
 }

@@ -16,7 +16,7 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
     }
 
     internal override void OnRegisteredInternal()
@@ -25,7 +25,10 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
     }
     public sealed override SettingBase BuildBase(Player player)
     {
-        return new KeybindSetting(Id, GetLabel(player), GetSuggestedKey(player), GetPreventInteractionOnGUI(player),GetAllowTriggerSpectator(player) ,GetHint(player), 255,null,
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        CacheLabelAndHint(player, label, hint);
+        return new KeybindSetting(Id, label, GetSuggestedKey(player), GetPreventInteractionOnGUI(player),GetAllowTriggerSpectator(player) ,hint, 255,null,
             OnChanged);
     }
     protected abstract void OnPressed(Player player);

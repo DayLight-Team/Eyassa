@@ -20,10 +20,11 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     public abstract string CustomId { get; }
     protected abstract string GetLabel(Player player);
     protected virtual string? GetHint(Player player) => null;
-    internal Dictionary<Player?, SettingBase> LastReceivedValues { get; } = new();
+    internal Dictionary<Player, SettingBase> LastReceivedValues { get; } = new();
     public virtual bool IsVisibleToPlayer(Player player) => true;
     public virtual bool IsIdCached => true;
-    private List<Player> AvailableForPlayers { get; } = [];
+    private HashSet<Player> AvailableForPlayers { get; } = [];
+    private Dictionary<Player, (string Label, string? Hint)> LastSentLabelHints { get; } = new();
     internal abstract void OnRegisteredInternal();
     
     bool IOption.CheckForUpdate(Player? player)
@@ -59,6 +60,28 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     public bool IsCurrentlyVisible(Player player)
     {
         return AvailableForPlayers.Contains(player);
+    }
+
+    protected bool UpdateLabelAndHintIfChanged(SettingBase? setting, Player player, bool overrideValue = true)
+    {
+        if (setting == null)
+            return false;
+
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        if (LastSentLabelHints.TryGetValue(player, out var previous) &&
+            previous.Label == label &&
+            previous.Hint == hint)
+            return false;
+
+        setting.UpdateLabelAndHint(label, hint, overrideValue, filter: player1 => player1 == player);
+        LastSentLabelHints[player] = (label, hint);
+        return true;
+    }
+
+    protected void CacheLabelAndHint(Player player, string label, string? hint)
+    {
+        LastSentLabelHints[player] = (label, hint);
     }
 
     public virtual void OnFirstUpdate(Player? player)

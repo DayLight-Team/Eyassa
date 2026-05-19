@@ -17,7 +17,7 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
     }
     internal override void OnRegisteredInternal()
     {
@@ -25,6 +25,9 @@ public abstract class TextAreaOption : OptionBase<TextInputSetting>
     }
     public sealed override SettingBase BuildBase(Player player)
     {
-        return new TextInputSetting(Id, GetLabel(player), GetFoldoutMode(player), GetAlignment(player), GetHint(player));
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        CacheLabelAndHint(player, label, hint);
+        return new TextInputSetting(Id, label, GetFoldoutMode(player), GetAlignment(player), hint);
     }
 }

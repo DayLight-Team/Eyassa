@@ -10,7 +10,7 @@ public interface IOption
     public bool SendOnJoin { get; }
 
     public bool IsVisibleToPlayer(Player player);
-    internal SettingBase BuildBase(Player? player);
+    internal SettingBase BuildBase(Player player);
     public bool IsCurrentlyVisible(Player player);
     internal void OnFirstUpdate(Player? player);
     internal bool CheckForUpdate(Player? player);

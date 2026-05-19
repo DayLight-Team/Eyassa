@@ -9,6 +9,8 @@ namespace Eyassa.Features.Options;
 
 public abstract class DropdownOption : OptionBase<DropdownSetting>
 {
+    private Dictionary<Player, List<string>> LastSentValues { get; } = new();
+
     protected abstract List<string> GetOptions(Player player);
     protected virtual int GetDefaultOptionIndex(Player player) => 0;
     protected virtual SSDropdownSetting.DropdownEntryType GetEntryType(Player player) => SSDropdownSetting.DropdownEntryType.Regular;
@@ -23,23 +25,29 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
             return;
         var setting = GetSetting(player);
         var options = GetOptions(player);
-        setting?.Cast<DropdownSetting>().UpdateSetting(options.ToArray(),overrideValue, filter: player1 => player1 == player);
-        LastSentValues[player] = options;
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        if (!LastSentValues.TryGetValue(player, out var previous) || !previous.SequenceEqual(options))
+        {
+            setting?.Cast<DropdownSetting>().UpdateSetting(options.ToArray(),overrideValue, filter: player1 => player1 == player);
+            LastSentValues[player] = options.ToList();
+        }
+
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
     }
 
     public sealed override SettingBase BuildBase(Player player)
     {
+        var label = GetLabel(player);
+        var hint = GetHint(player);
         var options = GetOptions(player);
-        var setting = new DropdownSetting(Id, GetLabel(player), options, GetDefaultOptionIndex(player),
-            GetEntryType(player), GetHint(player), onChanged: OnChanged);
-        LastSentValues[player] = options;
+        var setting = new DropdownSetting(Id, label, options, GetDefaultOptionIndex(player),
+            GetEntryType(player), hint, onChanged: OnChanged);
+        CacheLabelAndHint(player, label, hint);
+        LastSentValues[player] = options.ToList();
         return setting;
 
     }
 
     protected abstract void OnValueChanged(Player player, string selectedOption);
-    private Dictionary<Player, List<string>> LastSentValues { get; } = new();
     private void OnChanged(Player? player, SettingBase setting)
     {
 
@@ -50,9 +58,6 @@ public abstract class DropdownOption : OptionBase<DropdownSetting>
         if(Id != setting.Id)
             return;
         var dropdownSetting = setting.Cast<DropdownSetting>();
-        var newSetting = BuildBase(player).Cast<DropdownSetting>();
-        newSetting.SelectedIndex = dropdownSetting.SelectedIndex;
-        newSetting.Options = GetOptions(player);
         if(!LastSentValues.TryGetValue(player, out var last))
             return;
         

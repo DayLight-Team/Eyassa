@@ -13,7 +13,7 @@ namespace Eyassa.Managers;
 public class OptionsManager
 {
     internal static List<OptionNode> Nodes { get; } = new();
-    internal static Dictionary<Player, List<int>> SentIds { get; } = new();
+    internal static Dictionary<Player, HashSet<int>> SentIds { get; } = new();
     private static void SendToPlayer(Player? player)
     {
         if(player == null)
@@ -24,10 +24,8 @@ public class OptionsManager
         List<IOption> settings = [];
         foreach (var node in Nodes.Where(x=>x.IsVisibleToPlayer(player)).OrderByDescending(x=>x.Priority))
         {
-            var first = node.Options.Where(x => !SentIds[player].Contains(x.Id));
-            foreach (var option in first)
+            foreach (var option in node.Options.Where(x => SentIds[player].Add(x.Id)))
             {
-                SentIds[player].Add(option.Id);
                 try
                 {
                     option.OnFirstUpdate(player);

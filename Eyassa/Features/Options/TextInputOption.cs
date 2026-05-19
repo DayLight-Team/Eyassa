@@ -16,7 +16,7 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
-        setting?.UpdateLabelAndHint(GetLabel(player), GetHint(player), filter: player1 => player1 == player);
+        UpdateLabelAndHintIfChanged(setting, player, overrideValue);
     }
     internal override void OnRegisteredInternal()
     {
@@ -24,7 +24,10 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
     }
     public sealed override SettingBase BuildBase(Player player)
     {
-        return new UserTextInputSetting(Id, GetLabel(player),GetPlaceholder(player),  GetMaxLength(player), GetContentType(player), GetHint(player),255, onChanged: OnChanged);
+        var label = GetLabel(player);
+        var hint = GetHint(player);
+        CacheLabelAndHint(player, label, hint);
+        return new UserTextInputSetting(Id, label,GetPlaceholder(player),  GetMaxLength(player), GetContentType(player), hint,255, onChanged: OnChanged);
     }
     protected abstract void OnValueChanged(Player player, string text);
     private void OnChanged(Player? player, SettingBase setting)
