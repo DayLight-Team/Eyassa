@@ -6,6 +6,7 @@ using Eyassa.Interfaces;
 using Eyassa.Models;
 using MEC;
 using UnityEngine;
+using UserSettings.ServerSpecific;
 using Random = UnityEngine.Random;
 
 namespace Eyassa.Managers;
@@ -98,6 +99,8 @@ public class OptionsManager
             yield return Timing.WaitForSeconds(0.5f);
             try
             {
+                if(!ServerSpecificSettingsSync.IsTabOpenForUser(player.ReferenceHub))
+                    continue;
                 var sendSettings = false;
 
                 foreach (var node in Nodes)
