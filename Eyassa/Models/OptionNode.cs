@@ -22,11 +22,11 @@ public abstract class OptionNode
             Log.Error("Trying to register an node before Eyassa is loaded");
             return;
         }
-        UpdateOptions();
+        RegisterOptions();
         OptionsManager.Nodes.Add(this);
     }
 
-    public void UpdateOptions()
+    public void RegisterOptions()
     {
         foreach (var option in Options)
         {
