@@ -20,12 +20,30 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     public abstract string CustomId { get; }
     protected abstract string GetLabel(Player player);
     protected virtual string? GetHint(Player player) => null;
-    internal Dictionary<Player, SettingBase> LastReceivedValues { get; } = new();
+    internal Dictionary<string, SettingBase> LastReceivedValues { get; } = new();
     public virtual bool IsVisibleToPlayer(Player player) => true;
     public virtual bool IsIdCached => true;
-    private HashSet<Player> AvailableForPlayers { get; } = [];
-    private Dictionary<Player, (string Label, string? Hint)> LastSentLabelHints { get; } = new();
+    private HashSet<string> AvailableForPlayers { get; } = [];
+    private Dictionary<string, (string Label, string? Hint)> LastSentLabelHints { get; } = new();
     internal abstract void OnRegisteredInternal();
+
+    protected static string GetPlayerCacheKey(Player player)
+    {
+        return !string.IsNullOrWhiteSpace(player.UserId) ? player.UserId : player.Id.ToString();
+    }
+
+    protected void CacheReceivedValue(Player player, SettingBase setting)
+    {
+        LastReceivedValues[GetPlayerCacheKey(player)] = setting;
+    }
+
+    protected void ClearPlayerState(Player player)
+    {
+        var key = GetPlayerCacheKey(player);
+        AvailableForPlayers.Remove(key);
+        LastSentLabelHints.Remove(key);
+        LastReceivedValues.Remove(key);
+    }
     
     bool IOption.CheckForUpdate(Player? player)
     {
@@ -33,17 +51,18 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
         {
             if (player == null)
                 return false;
-            var didSeeBefore = AvailableForPlayers.Contains(player);
+            var key = GetPlayerCacheKey(player);
+            var didSeeBefore = AvailableForPlayers.Contains(key);
             var isVisible = IsVisibleToPlayer(player);
             bool update = false;
             switch (isVisible)
             {
                 case true when !didSeeBefore:
-                    AvailableForPlayers.Add(player);
+                    AvailableForPlayers.Add(key);
                     update = true;
                     break;
                 case false when didSeeBefore:
-                    AvailableForPlayers.Remove(player);
+                    ClearPlayerState(player);
                     update = true;
                     break;
             }
@@ -59,7 +78,7 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     
     public bool IsCurrentlyVisible(Player player)
     {
-        return AvailableForPlayers.Contains(player);
+        return AvailableForPlayers.Contains(GetPlayerCacheKey(player));
     }
 
     protected bool UpdateLabelAndHintIfChanged(SettingBase? setting, Player player, bool overrideValue = true)
@@ -69,19 +88,20 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
 
         var label = GetLabel(player);
         var hint = GetHint(player);
+        var key = GetPlayerCacheKey(player);
 
-        if (LastSentLabelHints.TryGetValue(player, out var previous) &&
+        if (LastSentLabelHints.TryGetValue(key, out var previous) &&
             previous.Label == label &&
             previous.Hint == hint)
             return false;
-        setting.UpdateLabelAndHint(label, hint, overrideValue, filter: player1 => player1 == player);
-        LastSentLabelHints[player] = (label, hint);
+        setting.UpdateLabelAndHint(label, hint, overrideValue, filter: player1 => player1.UserId == player.UserId);
+        LastSentLabelHints[key] = (label, hint);
         return true;
     }
 
     protected void CacheLabelAndHint(Player player, string label, string? hint)
     {
-        LastSentLabelHints[player] = (label, hint);
+        LastSentLabelHints[GetPlayerCacheKey(player)] = (label, hint);
     }
 
     public virtual void OnFirstUpdate(Player? player)
@@ -109,17 +129,14 @@ public abstract class OptionBase<T> : IOption where T : SettingBase
     void IOption.Send(Player player)
     {
         OnSentSetting(player);
-        Timing.CallDelayed(0.5f, () =>
-        {
-            UpdateOption(player);
-        });
+        UpdateOption(player);
     }
     protected bool IsRegistered;
     protected T GetSetting(Player player)
     {
         try
         {
-            var value = LastReceivedValues.TryGetValue(player, out var receivedValue) ? receivedValue.Cast<T>() : (T)BuildBase(player);
+            var value = LastReceivedValues.TryGetValue(GetPlayerCacheKey(player), out var receivedValue) ? receivedValue.Cast<T>() : (T)BuildBase(player);
             return value;
         }
         catch (Exception e)

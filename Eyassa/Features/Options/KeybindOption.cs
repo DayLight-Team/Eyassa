@@ -40,7 +40,7 @@ public abstract class KeybindOption : OptionBase<KeybindSetting>
             return;
         if(!setting.Cast<KeybindSetting>().IsPressed)
             return;
-        LastReceivedValues[player] = setting;
+        CacheReceivedValue(player, setting);
         try
         {
             OnPressed(player);

@@ -7,7 +7,7 @@ namespace Eyassa.Features.Options;
 
 public abstract class ButtonOption : OptionBase<ButtonSetting>
 {
-    private Dictionary<Player, (string Text, float HoldTime)> LastSentSettings { get; } = new();
+    private Dictionary<string, (string Text, float HoldTime)> LastSentSettings { get; } = new();
 
     protected abstract string GetButtonText(Player player);
 
@@ -26,15 +26,16 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
+        var key = GetPlayerCacheKey(player);
         var text = GetButtonText(player);
         var holdTime = GetHoldTime(player);
 
-        if (!LastSentSettings.TryGetValue(player, out var previous) ||
+        if (!LastSentSettings.TryGetValue(key, out var previous) ||
             previous.Text != text ||
             previous.HoldTime != holdTime)
         {
-            setting?.Cast<ButtonSetting>().UpdateSetting(text, holdTime, overrideValue, filter: player1 => player1 == player);
-            LastSentSettings[player] = (text, holdTime);
+            setting?.Cast<ButtonSetting>().UpdateSetting(text, holdTime, overrideValue, filter: player1 => player1.UserId == player.UserId);
+            LastSentSettings[key] = (text, holdTime);
         }
         UpdateLabelAndHintIfChanged(setting, player, overrideValue);
 
@@ -47,8 +48,9 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
         var hint = GetHint(player);
         var text = GetButtonText(player);
         var holdTime = GetHoldTime(player);
+        var key = GetPlayerCacheKey(player);
         CacheLabelAndHint(player, label, hint);
-        LastSentSettings[player] = (text, holdTime);
+        LastSentSettings[key] = (text, holdTime);
         return new ButtonSetting(Id, label, text, holdTime, hint, null, OnChanged);
     }
     protected abstract void OnPressed(Player player);
@@ -60,7 +62,7 @@ public abstract class ButtonOption : OptionBase<ButtonSetting>
             return;
         if(Id != setting.Id)
             return;
-        LastReceivedValues[player] = setting;
+        CacheReceivedValue(player, setting);
         try
         {
             OnPressed(player);

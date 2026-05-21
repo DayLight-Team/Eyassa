@@ -38,7 +38,7 @@ public abstract class TextInputOption : OptionBase<UserTextInputSetting>
             return;
         if(Id != setting.Id)
             return;
-        LastReceivedValues[player] = setting;
+        CacheReceivedValue(player, setting);
         try
         {
             OnValueChanged(player, setting.Cast<UserTextInputSetting>().Text);

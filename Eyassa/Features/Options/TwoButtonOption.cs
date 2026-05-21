@@ -7,7 +7,7 @@ namespace Eyassa.Features.Options;
 
 public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
 {
-    private Dictionary<Player, (string FirstText, string SecondText)> LastSentSettings { get; } = new();
+    private Dictionary<string, (string FirstText, string SecondText)> LastSentSettings { get; } = new();
 
     protected abstract string GetFirstButtonText(Player player);
     protected abstract string GetSecondButtonText(Player player);
@@ -22,14 +22,15 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
         if(player==null)
             return;
         var setting = GetSetting(player);
+        var key = GetPlayerCacheKey(player);
         var firstText = GetFirstButtonText(player);
         var secondText = GetSecondButtonText(player);
-        if (!LastSentSettings.TryGetValue(player, out var previous) ||
+        if (!LastSentSettings.TryGetValue(key, out var previous) ||
             previous.FirstText != firstText ||
             previous.SecondText != secondText)
         {
-            setting?.Cast<TwoButtonsSetting>().UpdateSetting(firstText, secondText, overrideValue, filter: player1 => player1 == player);
-            LastSentSettings[player] = (firstText, secondText);
+            setting?.Cast<TwoButtonsSetting>().UpdateSetting(firstText, secondText, overrideValue, filter: player1 => player1.UserId == player.UserId);
+            LastSentSettings[key] = (firstText, secondText);
         }
 
         UpdateLabelAndHintIfChanged(setting, player, overrideValue);
@@ -41,8 +42,9 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
         var hint = GetHint(player);
         var firstText = GetFirstButtonText(player);
         var secondText = GetSecondButtonText(player);
+        var key = GetPlayerCacheKey(player);
         CacheLabelAndHint(player, label, hint);
-        LastSentSettings[player] = (firstText, secondText);
+        LastSentSettings[key] = (firstText, secondText);
         return new TwoButtonsSetting(Id, label, firstText, secondText, GetIsSecondsButtonDefault(player) , hint, 255, onChanged: OnChanged);
     }
     protected abstract void OnPressed(Player player, bool isFirst);
@@ -54,7 +56,7 @@ public abstract class TwoButtonOption : OptionBase<TwoButtonsSetting>
             return;
         if(Id != setting.Id)
             return;
-        LastReceivedValues[player] = setting;
+        CacheReceivedValue(player, setting);
         try
         {
             OnPressed(player, setting.Cast<TwoButtonsSetting>().IsFirst);

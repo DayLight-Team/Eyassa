@@ -24,20 +24,8 @@ public abstract class HeaderOption : OptionBase<HeaderSetting>
 
         var label = GetLabel(player);
         var hint = GetHint(player);
-        var applyPadding = GetApplyPadding(player);
-
-        if (LastSentSettings.TryGetValue(player, out var previous) &&
-            previous.Label == label &&
-            previous.Hint == hint &&
-            previous.ApplyPadding == applyPadding)
-            return;
-
-        var setting = new HeaderSetting(Id, label, hint, applyPadding);
-        SettingBase.Unregister(player, [setting]);
-        SettingBase.Register(player, [setting]);
-        LastSentSettings[player] = (label, hint, applyPadding);
-
-
+        var setting = GetSetting(player);
+        setting.UpdateLabelAndHint(label, hint, overrideValue, filter: player1 => player1 == player);
     }
     public sealed override SettingBase BuildBase(Player player)
     {
