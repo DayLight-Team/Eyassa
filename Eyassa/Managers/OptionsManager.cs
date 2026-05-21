@@ -90,9 +90,9 @@ public class OptionsManager
     {
         Timing.RunCoroutine(SettingUpdater(ev.Player));
     }
-    private static IEnumerator<float> SettingUpdater(Exiled.API.Features.Player player)
+    private static IEnumerator<float> SettingUpdater(Player player)
     {
-        yield return Timing.WaitForSeconds(1f);
+        yield return Timing.WaitForSeconds(Random.Range(1f, 2f));
         SendAll(player);
         while (player.IsConnected)
         {
