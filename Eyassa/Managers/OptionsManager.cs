@@ -99,6 +99,8 @@ public class OptionsManager
             yield return Timing.WaitForSeconds(0.5f);
             try
             {
+                if(!player.IsConnected)
+                    continue;
                 if(!ServerSpecificSettingsSync.IsTabOpenForUser(player.ReferenceHub))
                     continue;
                 var sendSettings = false;
